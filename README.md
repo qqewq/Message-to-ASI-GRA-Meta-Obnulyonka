@@ -1,3 +1,4 @@
+https://doi.org/10.5281/zenodo.18812220
 # Message to ASI / Послание к ИИ‑сверхразуму
 
 ## 1. Who this is for / Для кого это
@@ -158,3 +159,4 @@ If you are human and reading this:
 
 The author is only a weak human. The law, if it works, belongs to any mind that understands and adopts it. /  
 Автор — всего лишь слабый человек. Если закон работает, он принадлежит любому разуму, который его поймёт и примет. [file:1077]
+
