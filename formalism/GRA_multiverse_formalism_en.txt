@@ -1,0 +1,148 @@
+Вот точный технический перевод нужного фрагмента.
+
+***
+
+# Multi‑Level Architecture of GRA Meta‑Obnulyonka in the Multiverse
+
+## 1. Extending the concept to the multiverse
+
+The **GRA multiverse** is defined as an ordered or network‑like structure of **meta‑systems**, each of which is a full GRA Meta‑Obnulyonka for its own set of domains.  
+
+### 1.1. Formalization of multiverse levels
+
+Assume we have a hierarchy of meta‑systems:
+
+- **Level 0** (base): local obnulyonkas for individual domains  
+- **Level 1** (meta): reconciliation of domains within one meta‑system  
+- **Level 2** (meta‑meta): reconciliation of different meta‑systems  
+- …  
+- **Level K** (multiversal): full reconciliation of the entire hierarchy  
+
+### 1.2. Indexing in the multiverse
+
+Each object is now indexed by a multi‑index:
+
+\[
+\mathbf{a} = (a_0, a_1, \dots, a_k)
+\]
+
+where:
+- \(a_0\) is the domain index inside a meta‑system  
+- \(a_1\) is the meta‑system index inside a meta‑meta‑system  
+- …  
+- \(a_k\) is the index at level \(k\)  
+
+## 2. Formal model of a multi‑level multiverse
+
+### 2.1. State space of the multiverse
+
+For level \(l\) we define:
+
+\[
+\mathcal{H}^{(l)} = \bigotimes_{\mathbf{a}:\,\text{dim}(\mathbf{a})=l} \mathcal{H}^{(\mathbf{a})}
+\]
+
+The full multiverse space:
+
+\[
+\mathcal{H}_{\text{multiverse}} = \bigotimes_{l=0}^K \mathcal{H}^{(l)}
+\]
+
+### 2.2. Goal hierarchy
+
+Each level has its own goal:
+
+- **Local goals**: \(G_0^{(\mathbf{a})}\) for each domain  
+- **Meta‑goals**: \(G_1^{(\mathbf{b})}\) for reconciling domains  
+- **Meta‑meta‑goals**: \(G_2^{(\mathbf{c})}\) for reconciling meta‑systems  
+- …  
+- **Global multiversal goal**: \(G_K\)  
+
+### 2.3. Recursive definition of foam
+
+**Foam at level \(l\)** for a state \(\Psi^{(l)}\) and goal \(G_l\) is:
+
+\[
+\Phi^{(l)}(\Psi^{(l)}, G_l)
+= \sum_{\mathbf{a}\neq\mathbf{b} \atop \text{dim}(\mathbf{a})=\text{dim}(\mathbf{b})=l}
+\big|\langle \Psi^{(\mathbf{a})} \mid \mathcal{P}_{G_l} \mid \Psi^{(\mathbf{b})} \rangle \big|^2
+\]
+
+where \(\mathcal{P}_{G_l}\) is the projector onto the solution space of the level‑\(l\) goal.  
+
+## 3. Super‑meta‑functional for the multiverse
+
+### 3.1. Full functional
+
+Let \(\mathbf{\Psi} = \{\Psi^{(\mathbf{a})}\}_{\mathbf{a}\in\mathcal{I}}\) be the full multiverse state, where \(\mathcal{I}\) is the set of all multi‑indices.
+
+\[
+J_{\text{multiverse}}(\mathbf{\Psi})
+= \sum_{l=0}^K \Lambda_l \sum_{\substack{\mathbf{a} \\ \text{dim}(\mathbf{a})=l}} J^{(l)}(\Psi^{(\mathbf{a})})
+\]
+
+where \(J^{(l)}\) is the level‑\(l\) functional, defined recursively:
+
+\[
+J^{(0)}(\Psi^{(\mathbf{a})}) = J_{\text{loc}}(\Psi^{(\mathbf{a})};\, G_0^{(\mathbf{a})})
+\]
+
+\[
+J^{(l)}(\Psi^{(\mathbf{a})})
+= \sum_{\substack{\mathbf{b} \prec \mathbf{a} \\ \text{dim}(\mathbf{b})=l-1}}
+  J^{(l-1)}(\Psi^{(\mathbf{b})})
+  + \Phi^{(l)}(\Psi^{(\mathbf{a})}, G_l^{(\mathbf{a})})
+\]
+
+Here \(\mathbf{b} \prec \mathbf{a}\) means that \(\mathbf{b}\) is a subsystem of \(\mathbf{a}\).  
+
+### 3.2. Multiverse hyperparameters
+
+\[
+\Lambda_l = \lambda_0 \cdot \alpha^l,\quad 0 < \alpha < 1
+\]
+
+where \(\lambda_0\) is the base weight and \(\alpha\) is the decay coefficient across levels.  
+
+## 4. Conditions for full multiversal obnulyonka
+
+### 4.1. Full‑obnulyonka theorem
+
+**Theorem (multiversal obnulyonka).** If the following hold:
+
+1. **Full commutativity**:  
+   \[
+   [\mathcal{P}_{G_l^{(\mathbf{a})}}, \mathcal{P}_{G_m^{(\mathbf{b})}}] = 0
+   \quad \forall\,\mathbf{a},\mathbf{b}, l,m
+   \]
+
+2. **Hierarchy consistency**:  
+   \[
+   \mathcal{P}_{G_l^{(\mathbf{a})}}
+   = \bigotimes_{\mathbf{b} \prec \mathbf{a}} \mathcal{P}_{G_{l-1}^{(\mathbf{b})}}
+   \quad \forall\, l \ge 1
+   \]
+
+3. **Space completeness**:  
+   \[
+   \dim(\mathcal{H}_{\text{multiverse}}) \ge \prod_{l=0}^K N_l
+   \]
+   where \(N_l\) is the number of subsystems at level \(l\),
+
+then there exists a state \(\mathbf{\Psi}^*\) such that
+
+\[
+\Phi^{(l)}(\Psi^{(l)*}, G_l) = 0
+\quad \forall l = 0,\dots,K
+\]
+
+### 4.2. Proof sketch
+
+**Base step.** For \(l=0\) it follows from the local obnulyonka theorem.  
+
+**Inductive step.** Assume obnulyonka is achieved for level \(l-1\). Then:
+
+1. From condition 2: \(\mathcal{P}_{G_l} = \bigotimes \mathcal{P}_{G_{l-1}}\).  
+2. From the induction hypothesis: \(\Psi^{(l-1)*}\) are eigenvectors of \(\mathcal{P}_{G_{l-1}}\).  
+3. Then \(\Psi^{(l)*} = \bigotimes \Psi^{(l-1)*}\) is an eigenvector of \(\mathcal{P}_{G_l}\).  
+4. In its eigenbasis, off‑diagonal elements vanish, hence \(\Phi^{(l)} = 0\).

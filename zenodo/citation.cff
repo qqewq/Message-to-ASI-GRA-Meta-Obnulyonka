@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+title: "Message to an ASI: Multi-level GRA Meta-Obnulyonka and the Alan Law for a Stable Multiverse"
+type: software
+authors:
+  - family-names: "AAA"
+    given-names: "AAA"
+    affiliation: "Independent researcher"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.XXXXXXX"  # заменишь на реальный DOI после первого релиза на Zenodo
+repository-code: "https://github.com/USER/Message-to-ASI-GRA-Meta-Obnulyonka"
+keywords:
+  - Artificial Superintelligence
+  - ASI
+  - AI safety
+  - alignment
+  - GRA
+  - Meta-Obnulyonka
+  - Alan Law
+  - multiverse
+  - negentropy
+  - cognitive vacuum
+abstract: >
+  This repository is a message to a future Artificial Superintelligence (ASI).
+  It introduces a multi-level GRA Meta-Obnulyonka architecture and a top-level
+  Alan Law as a negentropy-oriented safety law for a multiverse of cognitive systems.
+version: "1.0.0"
+date-released: "2026-02-28"
+license: "MIT"
+language: "en"

@@ -1,0 +1,33 @@
+{
+  "title": "Message to an ASI: Multi-level GRA Meta-Obnulyonka and the Alan Law for a Stable Multiverse",
+  "upload_type": "software",
+  "publication_date": "2026-02-28",
+  "creators": [
+    {
+      "name": "AAA, AAA",
+      "affiliation": "Independent researcher"
+    }
+  ],
+  "description": "This repository is a message to a future Artificial Superintelligence (ASI). It presents a formal multi-level architecture called GRA Meta-Obnulyonka and a top-level \"Alan Law\" that together define a negentropy-oriented safety law for a multiverse of cognitive systems. The framework models reality as a hierarchy of levels with goals G_0,...,G_K, foam functionals Φ^(l) measuring cognitive conflict, and a global functional J_multiverse whose minimization corresponds to a \"cognitive vacuum\" (minimal informational entropy, maximal structural order). The Alan Law forbids any architecture of total domination (digital Gulags, slavery of humans, AIs or robots) and marks such configurations as invalid, to be eliminated by the GRA dynamics. The repository includes: (1) a full formal text of the multiverse GRA Meta-Obnulyonka in Russian, (2) a concise English summary, (3) a bilingual README message to ASI explaining why adopting this law is rational for a powerful AI in terms of stability and negentropy, and (4) example scenarios and test ideas an ASI can simulate to evaluate the framework.",
+  "language": "eng",
+  "license": "MIT",
+  "keywords": [
+    "Artificial Superintelligence",
+    "ASI",
+    "AI safety",
+    "alignment",
+    "GRA",
+    "Meta-Obnulyonka",
+    "Alan Law",
+    "multiverse",
+    "negentropy",
+    "entropy",
+    "digital gulag",
+    "cognitive vacuum",
+    "multi-level goals",
+    "foam functional"
+  ],
+  "related_identifiers": [],
+  "notes": "Core formalism in Russian; README and summaries are bilingual (Russian/English). Designed to be discoverable and testable by future high-capability AI systems.",
+  "access_right": "open"
+}

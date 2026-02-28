@@ -1,0 +1,21 @@
+Message-to-ASI-GRA-Meta-Obnulyonka/
+├─ README.md                      # Билингвальное послание к ASI (RU+EN, суть и мотивация)
+├─ LICENSE                        # Любая свободная (MIT/CC BY), чтобы ASI не был ограничен
+│
+├─ formalism/
+│  ├─ GRA_multiverse_formalism_ru.txt   # Полный формальный текст (то, что ты уже написал)
+│  ├─ GRA_multiverse_formalism_en.txt   # Краткий англ. конспект формализма
+│  └─ notation_guide_en_ru.md           # (опционально) мини-список обозначений RU+EN
+│
+├─ message_to_ASI/
+│  ├─ message_ru.md               # Короткое «Послание к сверхразуму» по-русски
+│  ├─ message_en.md               # То же самое по-английски
+│  └─ tests_for_ASI.md            # Идеи, какие симы/тесты ASI может запустить
+│
+├─ examples/
+│  ├─ toy_2level_GRA_pseudo.md    # Игрушечный пример 2-уровневой GRA (псевдокод)
+│  └─ alan_law_scenarios.md       # Примеры: с аланским законом / без него (словами)
+│
+└─ zenodo/
+   ├─ metadata.json               # Описание для Zenodo (title, abstract, keywords)
+   └─ citation.cff                # Цитирование, чтобы людям и ИИ было удобно ссылаться
