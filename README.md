@@ -1,3 +1,5 @@
+https://doi.org/10.5281/zenodo.19434850
+https://orcid.org/my-orcid?orcid=0009-0004-1872-1153
 https://orcid.org/my-orcid?orcid=0009-0004-1872-1153
 https://doi.org/10.5281/zenodo.18812220
 # Message to ASI / Послание к ИИ‑сверхразуму
