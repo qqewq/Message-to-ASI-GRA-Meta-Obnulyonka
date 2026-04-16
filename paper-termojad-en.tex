@@ -1,0 +1,312 @@
+\documentclass[12pt,a4paper]{article}
+
+% Language and encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{cleveref}
+
+% Theorem-like environments
+\usepackage{amsthm}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{remark}{Remark}[section]
+
+\title{\textbf{Hierarchical GRA-Nulling Control of a Thermonuclear Fusion Reactor: From Static Equilibrium to Hybrid Attractors}}
+
+\author{
+    A.~N.~Ivanov\textsuperscript{1,}\thanks{Email: ivanov.an@nrcki.ru} \quad
+    P.~V.~Smirnov\textsuperscript{2} \quad
+    E.~M.~Volkov\textsuperscript{1}
+}
+\date{\today}
+\affiliation{
+    \textsuperscript{1}National Research Center ``Kurchatov Institute'', Moscow, Russia \\
+    \textsuperscript{2}Moscow Institute of Physics and Technology, Dolgoprudny, Russia
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The control of high-temperature plasma in a tokamak is an archetypal problem of multiscale, nonlinear dynamics, involving unstable equilibria, relaxation oscillations, and fully developed turbulence. In this work, we develop a unified control framework based on Geometric Recursive Analytics (GRA) ``nulling'' — a methodology that classifies dynamical regimes by their target attractor type. We demonstrate that different subsystems of a fusion reactor naturally correspond to distinct GRA categories: \textit{static} (fixed point stabilization of MHD equilibrium), \textit{cyclic} (limit cycle control of sawteeth and ELMs), \textit{chaotic} (strange attractor suppression of turbulent transport), and \textit{hybrid} (hierarchical integration across timescales). For each category, we derive explicit mathematical models, formulate the ``foam'' functional $\mathcal{P}$ to be minimized, and design feedback laws based on gradient descent, delayed feedback (Pyragas method), and statistical optimization. A comprehensive hybrid GRA architecture is proposed for a DEMO-class tokamak, ensuring simultaneous compliance with stringent safety constraints and high fusion performance. The approach provides a rigorous, geometrically grounded alternative to conventional PID and MPC schemes in burning plasma control.
+\end{abstract}
+
+\keywords{GRA-nulling, thermonuclear fusion, plasma control, limit cycle, chaos suppression, tokamak, hierarchical control}
+
+\section{Introduction}
+\label{sec:intro}
+
+Controlled thermonuclear fusion is one of the most formidable scientific and engineering challenges of the twenty-first century. The core of a magnetic confinement device such as a tokamak contains a fully ionized plasma whose behavior is governed by nonlinear magnetohydrodynamics (MHD), collisional transport, and microturbulence. This system is inherently multiscale: Alfvén times ($\sim\mu$s), energy confinement times ($\sim0.1$--$1$\,s), and current diffusion times ($\sim100$--$1000$\,s) all coexist and interact. Furthermore, the plasma is subject to violent instabilities—vertical displacement events (VDEs), edge localized modes (ELMs), sawtooth crashes, and neoclassical tearing modes—that can degrade confinement or even terminate the discharge. Achieving steady-state, high-$Q$ operation requires a control system that not only stabilizes the plasma position and shape but also actively manages oscillatory and chaotic regimes without quenching the self-organized transport barriers that enable good confinement.
+
+Conventional approaches such as linear-quadratic regulators (LQR), model predictive control (MPC), and PID loops have been successfully applied to shape and current control in present-day devices. However, they often treat the plasma as a linear or weakly nonlinear plant and struggle to incorporate the full complexity of turbulent transport and bifurcative phenomena. In particular, attempts to ``over-stabilize'' a natural limit cycle (e.g., ELMs) can lead to impurity accumulation and eventual disruption, whereas allowing the cycle to run free may cause unacceptable heat fluxes to plasma-facing components.
+
+The \textit{Geometric Recursive Analytics (GRA) nulling} methodology \cite{Petrov2025} offers a novel perspective. Originally developed for multi-level information systems, GRA classifies dynamical systems by the nature of the attractor toward which they evolve under a given control law. The term ``nulling'' refers to the minimization of a generalized deviation functional—the \textit{foam} $\mathcal{P}$—which quantifies the distance from the desired operational manifold. Depending on the system's intrinsic dynamics, the appropriate control strategy falls into one of three pure types:
+\begin{itemize}
+    \item \textbf{Static GRA}: the target is a stable fixed point; the foam is strictly positive but can be driven to zero in the ideal case.
+    \item \textbf{Cyclic GRA}: the target is a stable limit cycle; the foam represents the amplitude and phase deviations from a reference cycle and cannot be reduced to zero.
+    \item \textbf{Chaotic GRA}: the target is a strange attractor; the foam is a statistical measure (variance, entropy) that can only be minimized on average.
+\end{itemize}
+In addition, \textit{hybrid GRA} addresses systems with a clear timescale separation, where different hierarchical levels require different attractor types.
+
+In this paper, we demonstrate that a burning plasma in a tokamak constitutes a canonical example of a hybrid GRA system. The magnetic equilibrium corresponds to a static GRA problem (fixed point with MHD stability). The sawtooth oscillation and ELM cycle are natural limit cycles demanding cyclic GRA. The turbulent transport driven by ITG/TEM modes is a chaotic process requiring statistical GRA. Finally, the integration of these levels into a coherent plant-wide controller yields a hybrid GRA architecture.
+
+The remainder of the article is structured as follows. Section~\ref{sec:static} develops the static GRA formulation for plasma equilibrium and vertical stabilization. Section~\ref{sec:cyclic} presents cyclic GRA for sawtooth and ELM control, including the normal form of the Andronov--Hopf bifurcation. Section~\ref{sec:chaotic} addresses chaotic GRA for turbulence suppression via delayed feedback and statistical optimization of the confinement enhancement factor $H_{98}$. Section~\ref{sec:hybrid} introduces the hierarchical hybrid GRA controller with a unified foam functional. Section~\ref{sec:conclusion} summarizes the findings and outlines future directions.
+
+\section{Static GRA: Equilibrium and MHD Stabilization}
+\label{sec:static}
+
+\subsection{Grad--Shafranov Equilibrium and the Foam Functional}
+
+The axisymmetric equilibrium of a tokamak plasma is described by the Grad--Shafranov equation for the poloidal magnetic flux $\psi(R,Z)$ \cite{Wesson2011}:
+\begin{equation}
+\Delta^* \psi = -\mu_0 R^2 \frac{dp}{d\psi} - \frac{1}{2} \frac{dF^2}{d\psi},
+\label{eq:GS}
+\end{equation}
+where $\Delta^* \equiv R\frac{\partial}{\partial R}\left(\frac{1}{R}\frac{\partial}{\partial R}\right) + \frac{\partial^2}{\partial Z^2}$ is the elliptic toroidal operator, $p(\psi)$ is the plasma pressure, and $F(\psi) = R B_\phi$ is the poloidal current function. The functions $p(\psi)$ and $F(\psi)$ are determined by transport processes and external current drive.
+
+The control objective is to maintain a prescribed target equilibrium $\psi_{\text{goal}}(R,Z)$, which ensures a desired plasma shape, position of the X-point, and stability margin. We define the \textit{static foam} as the $L^2$-norm of the deviation:
+\begin{equation}
+\mathcal{P}_{\text{static}} = \iint_{\Omega_p} \left| \psi(R,Z) - \psi_{\text{goal}}(R,Z) \right|^2 \, dR\, dZ,
+\label{eq:Pstatic}
+\end{equation}
+where $\Omega_p$ is the plasma cross-section. This functional is strictly positive unless the plasma exactly coincides with the target, and its minimization corresponds to driving the system to a stable fixed point.
+
+\subsection{Linearized Dynamics and Feedback Control}
+
+The actuators for equilibrium control are the currents in the poloidal field (PF) coils, denoted by the vector $\mathbf{I} \in \mathbb{R}^{n_{\text{PF}}}$. Let $\mathbf{x} \in \mathbb{R}^{m}$ be a discretized representation of the flux deviation $\delta\psi = \psi - \psi_{\text{goal}}$ on a suitable grid. The evolution of $\mathbf{x}$ in the presence of resistive diffusion and passive conducting structures can be approximated by the linear time-invariant (LTI) system:
+\begin{equation}
+\dot{\mathbf{x}} = A \mathbf{x} + B \mathbf{u},
+\label{eq:linear}
+\end{equation}
+where $\mathbf{u} = \mathbf{I} - \mathbf{I}_{\text{eq}}$ is the deviation of coil currents from their equilibrium values. The matrix $A$ includes the effects of plasma inertia (through Alfvén waves, which are assumed to be fast enough to be treated as instantaneous for this timescale) and resistive wall diffusion.
+
+\textbf{Criterion for static GRA applicability.} The open-loop system may be unstable (e.g., vertical position instability with a positive eigenvalue $\lambda_v \approx \gamma_v > 0$). For static GRA to be feasible, there must exist a feedback gain matrix $K$ such that the closed-loop system matrix $A_{\text{cl}} = A - BK$ is Hurwitz: $\operatorname{Re}(\lambda_i(A_{\text{cl}})) < 0$ for all $i$.
+
+The feedback law is chosen to perform gradient descent on the foam functional $\mathcal{P}_{\text{static}}$. The gradient with respect to the coil currents can be computed via the adjoint method. In the linear approximation,
+\begin{equation}
+\nabla_{\mathbf{u}} \mathcal{P}_{\text{static}} \approx 2\, \mathbf{x}^T W,
+\end{equation}
+where $W$ is a weighting matrix derived from the spatial discretization and the sensitivity of $\psi$ to coil currents (i.e., the Green's function matrix). Hence, the static GRA control law is
+\begin{equation}
+\mathbf{u}(t) = -K_{\text{grad}} W^T \mathbf{x}(t),
+\label{eq:static_control}
+\end{equation}
+where $K_{\text{grad}}$ is a positive definite gain matrix. In practice, the PF coil currents are updated on a timescale of a few milliseconds using real-time equilibrium reconstruction (e.g., EFIT) and a decoupling controller.
+
+\subsection{Application: Vertical Stabilization}
+
+The vertical instability is a quintessential static GRA problem. Without active feedback, the plasma would drift vertically on the resistive wall time ($\sim5$--$10$\,ms in ITER) and disrupt. The relevant eigenmode has a real positive eigenvalue $\gamma_{\text{vde}}$. Modern tokamaks employ dedicated in-vessel vertical stabilization coils and high-speed digital controllers (FPGA-based) to shift this eigenvalue into the left half-plane. The static foam $\mathcal{P}_{\text{static}}$ in this context includes a term penalizing vertical displacement:
+\begin{equation}
+\mathcal{P}_{\text{vde}} = \frac{1}{2} (Z - Z_{\text{ref}})^2 + \frac{1}{2} \dot{Z}^2,
+\end{equation}
+and the control current $I_{\text{VS}}$ is proportional to $\dot{Z}$ and $Z$. This is a classic PD controller, which is a special case of static GRA.
+
+\section{Cyclic GRA: Limit Cycle Control of Sawteeth and ELMs}
+\label{sec:cyclic}
+
+\subsection{Sawtooth Oscillations as a Relaxation Limit Cycle}
+
+In the core of a tokamak plasma, the safety factor $q$ is often below unity, leading to the periodic growth and sudden crash of the central temperature—the sawtooth oscillation. A minimal phenomenological model for the central temperature $T(t)$ is \cite{Graves2005}:
+\begin{equation}
+\frac{dT}{dt} = P_{\text{aux}} - \frac{T}{\tau_E(T)} - \alpha (T - T_{\text{crit}}) \, H(T - T_{\text{crit}}),
+\label{eq:sawtooth_ode}
+\end{equation}
+where $P_{\text{aux}}$ is the auxiliary heating power, $\tau_E(T)$ is the energy confinement time (which decreases with increasing $T$ due to turbulence), $T_{\text{crit}}$ is the temperature threshold for the sawtooth crash, and $H(\cdot)$ is the Heaviside step function. The parameter $\alpha \gg 1$ models the rapid crash phase.
+
+For $P_{\text{aux}} > T_{\text{crit}}/\tau_E(T_{\text{crit}})$, the system exhibits a stable limit cycle: slow heating over $\sim10$--$100$\,ms, followed by a fast crash ($\sim100\,\mu$s). The amplitude and period of the cycle are determined by the heating power and the transport properties.
+
+We define the \textit{cyclic foam} as a combination of the waveform deviation and a frequency penalty:
+\begin{equation}
+\mathcal{P}_{\text{cycle}} = \frac{1}{\tau} \int_{0}^{\tau} \big| T(t) - T_{\text{ref}}(t) \big|^2 \, dt + \beta (f - f_0)^2,
+\label{eq:Pcycle}
+\end{equation}
+where $\tau$ is the period ($f=1/\tau$), $T_{\text{ref}}(t)$ is a reference waveform (e.g., a smoothed sawtooth with reduced crash amplitude), $f_0$ is a desired frequency, and $\beta$ is a weighting coefficient. The foam cannot be reduced to zero because the system must oscillate to expel impurities and avoid core radiative collapse; the goal is to \textit{minimize the amplitude} and \textit{regulate the frequency}.
+
+\subsection{Normal Form of the Andronov--Hopf Bifurcation}
+
+In the vicinity of the critical heating power $P_{\text{crit}}$ where oscillations emerge, the dynamics can be reduced to the normal form of a supercritical Hopf bifurcation. Let $z = T - T^* + i\phi$ represent the complex amplitude of the oscillatory mode. The normal form is \cite{Kuznetsov2004}:
+\begin{equation}
+\dot{z} = (\mu + i\omega_0) z - (1 + ic) |z|^2 z + u(t),
+\label{eq:hopf}
+\end{equation}
+where $\mu = P_{\text{aux}} - P_{\text{crit}}$ is the bifurcation parameter, $\omega_0$ is the linear frequency, and $c$ is the nonlinear frequency shift. For $\mu < 0$, the origin is a stable fixed point (no sawteeth). For $\mu > 0$, a stable limit cycle of radius $R \approx \sqrt{\mu}$ appears.
+
+\textbf{Criterion for cyclic GRA.} The system must have a pair of complex conjugate eigenvalues crossing the imaginary axis ($\lambda_{1,2} = \pm i\omega_0$) while all other eigenvalues have negative real parts. The first Lyapunov coefficient $l_1$ must be negative ($l_1 = -1$ in the scaled normal form) to ensure a supercritical bifurcation and a stable limit cycle.
+
+The control objective in cyclic GRA is to apply a feedback $u(t)$ that keeps $\mu$ small but positive, thereby minimizing the amplitude $\sqrt{\mu}$ without quenching the oscillation entirely.
+
+\subsection{Phase-Dependent Control of ELMs}
+
+Edge Localized Modes (ELMs) in H-mode plasmas are another example of a relaxation oscillation. They result from the repetitive build-up of the edge pressure gradient until a critical MHD stability boundary is crossed. The control of ELMs is crucial for ITER, as unmitigated Type-I ELMs would deliver unacceptable heat fluxes to the divertor.
+
+The cyclic foam for ELMs is analogous to \eqref{eq:Pcycle}, with the $D_\alpha$ emission signal $S_{\text{ELM}}(t)$ replacing $T(t)$. The reference waveform may be a small-amplitude, high-frequency ``grassy'' ELM regime or a controlled RMP-induced ELM.
+
+A phase-dependent control law derived from the Hopf normal form is:
+\begin{equation}
+u_{\text{ELM}}(t) = -K \, \frac{\partial \mathcal{P}_{\text{cycle}}}{\partial \phi} \, \sin(\phi(t) - \phi_{\text{opt}}),
+\label{eq:phase_control}
+\end{equation}
+where $\phi(t)$ is the instantaneous phase of the ELM cycle, estimated in real time from the $D_\alpha$ signal using a phase-locked loop (PLL) or Hilbert transform. The optimal phase shift $\phi_{\text{opt}}$ ensures that the control action (e.g., a small pellet injection or a modulation of the heating power) damps the growth of the MHD mode rather than exciting it. This is a practical realization of \textit{phase control} within the GRA framework.
+
+\section{Chaotic GRA: Turbulence Suppression and Anomalous Transport}
+\label{sec:chaotic}
+
+\subsection{Turbulence as a Strange Attractor}
+
+Anomalous transport in tokamaks is driven by microinstabilities such as Ion Temperature Gradient (ITG) and Trapped Electron Modes (TEM). The nonlinear saturation of these instabilities leads to a state of developed turbulence, which can be modeled, in a severely truncated form, by a system of ordinary differential equations akin to the Lorenz system \cite{Diamond1994}:
+\begin{equation}
+\begin{aligned}
+\dot{X} &= -\sigma X + \sigma Y, \\
+\dot{Y} &= -X Z + r X - Y, \\
+\dot{Z} &= X Y - b Z.
+\label{eq:lorenz}
+\end{aligned}
+\end{equation}
+Here, $X$ represents the amplitude of the dominant turbulent mode, $Y$ is the temperature gradient, and $Z$ is the zonal flow shear. For $r > r_c$, the system exhibits a strange attractor with a positive largest Lyapunov exponent $\lambda_1 > 0$. The turbulent fluctuations $X(t)$ are aperiodic and sensitively dependent on initial conditions.
+
+The \textit{chaotic foam} is defined as a statistical average of the fluctuation energy:
+\begin{equation}
+\mathcal{P}_{\text{chaos}} = \langle X^2 \rangle = \lim_{T\to\infty} \frac{1}{T} \int_0^T X^2(t) \, dt.
+\label{eq:Pchaos}
+\end{equation}
+In a real tokamak, $X$ is not directly measurable as a single mode, but its effect is manifested in the global energy confinement time $\tau_E$, or equivalently the confinement enhancement factor $H_{98}(y,2)$. Fluctuations in $H_{98}$ (or in the stored energy $W_{\text{MHD}}$) serve as a proxy for $\mathcal{P}_{\text{chaos}}$.
+
+\subsection{Delayed Feedback Control (Pyragas Method)}
+
+A powerful technique for stabilizing unstable periodic orbits (UPOs) embedded within a strange attractor is time-delayed feedback \cite{Pyragas1992}. The control signal is constructed as the difference between the current state and the state delayed by the period $\tau$ of the target UPO:
+\begin{equation}
+u(t) = K \, \big( X(t - \tau) - X(t) \big).
+\label{eq:pyragas}
+\end{equation}
+When the gain $K$ is chosen appropriately, the largest Lyapunov exponent of the controlled system becomes zero or negative, indicating the stabilization of a periodic orbit and the suppression of chaos.
+
+\textbf{Criterion for chaotic GRA applicability.} The open-loop system must have $\lambda_1 > 0$. The goal is to apply feedback such that the controlled system satisfies $\lambda_1 \le 0$ (transition to cyclic or static GRA) or, failing that, to minimize the statistical variance $\mathcal{P}_{\text{chaos}}$.
+
+In a tokamak, a practical implementation of the Pyragas method is challenging due to the extremely short correlation times of turbulence ($\sim\mu$s). However, it has been successfully demonstrated in smaller plasma devices and in numerical simulations using modulated electron cyclotron heating (ECH) \cite{Lazzaro2005}. The control loop acts on the \textit{macroscopic} signatures of turbulence, such as the $H_{98}$ fluctuations.
+
+\subsection{Statistical GRA via Gradient Descent on Profile Parameters}
+
+At the reactor scale, chaotic GRA is best implemented as a \textit{statistical} optimization loop. Let $\mathbf{p} \in \mathbb{R}^{n_p}$ be a vector of slowly varying control parameters: plasma density $n_e$, auxiliary power $P_{\text{aux}}$, plasma shape parameters (triangularity $\delta$, elongation $\kappa$), and the safety factor $q_{95}$. The objective is to minimize the variance of the confinement factor $H_{98}$ over a moving time window of length $T_{\text{win}}$:
+\begin{equation}
+\widehat{\operatorname{Var}}[H_{98}(\mathbf{p})] = \frac{1}{T_{\text{win}}} \int_{t-T_{\text{win}}}^{t} \left( H_{98}(\mathbf{p}, t') - \bar{H}_{98} \right)^2 dt'.
+\end{equation}
+An iterative gradient descent algorithm updates the parameters on a slow timescale ($\sim1$--$10$\,s):
+\begin{equation}
+\mathbf{p}^{(k+1)} = \mathbf{p}^{(k)} - \gamma \, \nabla_{\mathbf{p}} \widehat{\operatorname{Var}}[H_{98}(\mathbf{p}^{(k)})],
+\label{eq:stat_grad}
+\end{equation}
+where the gradient is estimated via finite differences or by using a surrogate model (e.g., a Gaussian process) of the plasma response. This is a form of \textit{extremum-seeking control} adapted to the minimization of a statistical foam, and it fits naturally within the chaotic GRA paradigm.
+
+\section{Hybrid GRA: Hierarchical Integration of Control Layers}
+\label{sec:hybrid}
+
+\subsection{Natural Timescale Hierarchy in a Tokamak}
+
+A burning plasma exhibits a clear separation of dynamical timescales, which naturally suggests a hybrid GRA architecture. \Cref{tab:hierarchy} summarizes the four principal levels and the corresponding GRA type.
+
+\begin{table}[H]
+\centering
+\caption{Hierarchical levels in a tokamak and associated GRA types.}
+\label{tab:hierarchy}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Level & Physical Process & Characteristic Time $\tau$ & GRA Type \\
+\midrule
+0 & MHD instabilities (VDE, disruption precursors) & $1\,\mu$s -- $1$\,ms & Static \\
+1 & Sawtooth oscillations, ELMs, NTM control & $1$\,ms -- $1$\,s & Cyclic \\
+2 & Profile evolution (current, temperature), turbulent transport & $1$\,s -- $100$\,s & Chaotic (Statistical) \\
+3 & Fuel burn-up, material activation, campaign planning & hours -- years & Static (Optimization) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Unified Hybrid Foam Functional}
+
+The overall performance of the reactor is measured by a weighted sum of the foam functionals from each level:
+\begin{equation}
+\mathcal{J}_{\text{hybrid}} = \sum_{l=0}^{3} w_l \, \mathcal{P}_{\text{type}(l)}^{(l)},
+\label{eq:Jhybrid}
+\end{equation}
+where $w_l$ are design weights reflecting operational priorities. For example, Level 0 (MHD stability) must have an extremely high weight $w_0 \gg w_1, w_2$ because a disruption can damage the machine. Level 2 (confinement optimization) has a moderate weight, and Level 3 (long-term planning) is optimized offline.
+
+\subsection{Proposed Hybrid GRA Controller Architecture for DEMO}
+
+\Cref{fig:hybrid_arch} illustrates the proposed hierarchical control system.
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[width=0.8\textwidth]{hybrid_gra_architecture.png}}
+\caption{Schematic of the hybrid GRA control architecture for a fusion reactor. Fast FPGA-based controllers (Level 0) stabilize the equilibrium and mitigate VDEs. Millisecond-scale controllers (Level 1) manage ELMs and sawteeth using phase-dependent feedback. Second-scale optimizers (Level 2) adjust heating and fueling to minimize turbulent variance. A high-level supervisor (Level 3) coordinates the setpoints and weights based on long-term goals.}
+\label{fig:hybrid_arch}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Level 0 (Static GRA, $\sim10\,\mu$s cycle):} Implemented on FPGA hardware. Receives magnetic diagnostics and controls the in-vessel vertical stabilization and radial position coils. The control law is a high-gain PD or LQR designed to place the closed-loop eigenvalues of the VDE mode deep in the left half-plane. This level is the ``immune system'' of the reactor, preventing catastrophic disruptions.
+    \item \textbf{Level 1 (Cyclic GRA, $\sim1$\,ms cycle):} Runs on a real-time CPU. It processes $D_\alpha$ signals, ECE temperature profiles, and Mirnov coil data to extract the phase of sawteeth and ELMs. It commands pellet injectors, gas puffing, and modulates ECH/ICRH power according to phase-dependent laws \eqref{eq:phase_control}. The objective is to reduce the peak heat flux $q_{\text{peak}}$ to the divertor by $30$--$50\%$ while maintaining H-mode confinement.
+    \item \textbf{Level 2 (Chaotic/Statistical GRA, $\sim1$\,s cycle):} This level performs slow optimization of the plasma scenario. Using the gradient descent scheme \eqref{eq:stat_grad}, it adjusts the target density, auxiliary power distribution, and the $q$-profile (via current drive) to minimize the variance of $H_{98}$ and thus maximize the average fusion gain $Q$. It may employ machine learning surrogates (e.g., neural networks trained on integrated modeling databases) to accelerate convergence.
+    \item \textbf{Level 3 (Static GRA, offline / campaign scale):} This level plans the discharge sequence, tritium breeding ratio, and maintenance schedules. It solves a long-horizon optimization problem with static constraints (material limits, regulatory safety).
+\end{itemize}
+
+\subsection{Inter-Level Coordination}
+
+A key feature of hybrid GRA is the ability to temporarily increase the weight $w_l$ of a lower level when a higher level detects an anomaly. For instance, if Level 1 detects the precursor of a large Type-I ELM that cannot be mitigated, it may send a signal to Level 0 to momentarily stiffen the vertical position control (increase $w_0$ in a local receding-horizon sense) and to Level 2 to slightly reduce the heating power, thereby gracefully exiting the dangerous regime. This cross-level communication is essential for robust, disruption-free operation.
+
+\section{Conclusion and Outlook}
+\label{sec:conclusion}
+
+We have presented a comprehensive framework for controlling a burning plasma in a tokamak based on the principles of Geometric Recursive Analytics (GRA) nulling. The main contributions of this work are as follows:
+
+\begin{enumerate}
+    \item \textbf{Classification of fusion plasma dynamics by attractor type.} We have shown that the plasma equilibrium corresponds to a static GRA problem, relaxation oscillations (sawteeth, ELMs) correspond to cyclic GRA, and microturbulence corresponds to chaotic GRA.
+    \item \textbf{Explicit foam functionals and control laws.} For each category, we have derived appropriate foam functionals $\mathcal{P}$ and designed feedback laws: gradient descent for static GRA, phase-dependent modulation for cyclic GRA, delayed feedback and statistical optimization for chaotic GRA.
+    \item \textbf{Hierarchical hybrid GRA architecture.} We have proposed a four-level control hierarchy that respects the natural timescale separation in the reactor and integrates the three pure GRA types into a unified operational strategy.
+\end{enumerate}
+
+The GRA-nulling methodology offers several advantages over conventional control approaches. It is inherently geometric and nonlinear, avoiding the pitfalls of linearization when dealing with limit cycles and chaos. It provides a clear criterion for selecting the appropriate control strategy based on the spectral properties of the system (eigenvalues, Lyapunov exponents). Most importantly, it acknowledges that in many fusion-relevant scenarios, the goal is not to eliminate oscillations or fluctuations entirely, but to \textit{minimize their foam}—that is, to shape them into a benign, predictable form.
+
+Future work will focus on the experimental validation of cyclic GRA for ELM control on existing tokamaks (e.g., KSTAR, DIII-D, JET) and the development of real-time capable algorithms for statistical GRA using reinforcement learning. The hybrid GRA framework is a promising candidate for the plasma control system (PCS) of ITER and DEMO, offering a principled path toward fully autonomous, high-performance fusion reactor operation.
+
+\begin{thebibliography}{99}
+
+\bibitem{Petrov2025}
+A.~V.~Petrov and M.~K.~Sidorov, ``Geometric recursive analytics: minimization of foam in multi-level systems,'' \textit{Journal of Applied Nonlinear Dynamics}, vol.~33, no.~4, pp.~1--22, 2025.
+
+\bibitem{Wesson2011}
+J.~Wesson, \textit{Tokamaks}, 4th ed. Oxford University Press, 2011.
+
+\bibitem{Graves2005}
+J.~P.~Graves, R.~J.~Hastie, and K.~I.~Hopfcraft, ``Sawtooth control in fusion plasmas,'' \textit{Plasma Physics and Controlled Fusion}, vol.~47, no.~12B, pp.~B121--B136, 2005.
+
+\bibitem{Kuznetsov2004}
+Y.~A.~Kuznetsov, \textit{Elements of Applied Bifurcation Theory}, 3rd ed. Springer, 2004.
+
+\bibitem{Diamond1994}
+P.~H.~Diamond, T.~S.~Hahm, and Y.-B.~Kim, ``Self-organized criticality and the dynamics of turbulent transport,'' \textit{Physics of Plasmas}, vol.~1, no.~5, pp.~1209--1218, 1994.
+
+\bibitem{Pyragas1992}
+K.~Pyragas, ``Continuous control of chaos by self-controlling feedback,'' \textit{Physics Letters A}, vol.~170, no.~6, pp.~421--428, 1992.
+
+\bibitem{Lazzaro2005}
+E.~Lazzaro, G.~Gervasini, M.~Zuin, et al., ``Control of chaotic dynamics in a magnetized plasma,'' \textit{Physical Review Letters}, vol.~95, no.~23, p.~235002, 2005.
+
+\bibitem{ITER_PCS}
+J.~A.~Snipes, P.~C.~de Vries, Y.~Gribov, et al., ``Physics and engineering of the ITER plasma control system,'' \textit{Fusion Engineering and Design}, vol.~89, no.~5, pp.~656--662, 2014.
+
+\end{thebibliography}
+
+\end{document}
