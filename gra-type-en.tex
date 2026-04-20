@@ -1,0 +1,492 @@
+\documentclass[12pt,a4paper]{article}
+
+% Encoding and language
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% Mathematics
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+
+% Tables and graphics
+\usepackage{array,booktabs,multirow}
+\usepackage{graphicx}
+
+% Page layout
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+% Theorems and definitions
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+
+% Operators
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\ReLU}{Re}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\G}{\mathbf{G}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\Pset}{\mathcal{P}}
+
+\title{All Types of GRA-Zeroing: Static, Cyclic, Chaotic and Hybrid \\[0.5em]
+\large Set-Theoretic and Operator Extension}
+
+\author{A.~I.~Ivanov\thanks{Institute of Dynamical Systems, Moscow, Russia; ivanov@ids.ru} \and 
+P.~S.~Petrov\thanks{Laboratory of Complex Systems, St. Petersburg, Russia; petrov@lcss.spb.ru}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+GRA-zeroing (Geometric Recursive Analytics) is a family of methods for minimizing deviations from goals (``foam'') in multilevel dynamical systems. This paper provides a complete description of the three fundamental GRA types (static, cyclic, chaotic) and their hybrid combinations, together with mathematical applicability criteria. The concept is then extended to a set-theoretic and operator formalism: GRA types are regarded as elements of an abstract set $\G = \{S, C, H\}$ on which Boolean operations (union, intersection, difference, symmetric difference, complement) are defined. Hybrid architectures are described by Cartesian products $\G^L$. The notion of a GRA-zeroing operator acting on the space of dynamical systems is introduced, and an algebra of such operators is constructed. Practical applications of the set-theoretic approach are discussed: automatic system classification, design of hierarchical controllers, verification, and adaptive regime switching. The material concludes with a final formula for selecting the GRA type under multiple constraints.
+
+\textbf{Keywords:} GRA-zeroing, dynamical systems, attractors, foam, static GRA, cyclic GRA, chaotic GRA, hybrid GRA, set theory, operator analysis, hierarchical systems, AGI/ASI.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+GRA-zeroing (Geometric Recursive Analytics) is a family of methods for minimizing ``foam'' $\Phi(x)$ (deviations from goals) in multilevel systems. Depending on the dynamic behavior of the system, three fundamental attractor types are distinguished, corresponding to three kinds of GRA:
+
+\begin{itemize}
+    \item \textbf{Static GRA} – target attractor: fixed point ($\Phi \to 0$).
+    \item \textbf{Cyclic GRA} – target attractor: limit cycle ($\Phi(t)$ minimal but not zero, periodic).
+    \item \textbf{Chaotic GRA} – target attractor: strange attractor (statistical state, minimization of mean fluctuations).
+\end{itemize}
+
+In addition, hybrid variants are possible (e.g., different hierarchy levels use different types).
+
+In this article we not only describe each kind in detail with mathematical formulas and applicability criteria (Sections~\ref{sec:static}--\ref{sec:hybrid}), but also extend the concept to a set-theoretic and operator formalism (Sections~\ref{sec:set}--\ref{sec:applications}), which allows a uniform combination of strategies and the synthesis of complex controllers for artificial intelligence systems.
+
+\section{Static GRA (Fixed Point)}
+\label{sec:static}
+
+\subsection{Mathematical Model}
+
+The system is described by an ordinary differential equation:
+\begin{equation}
+    \dot{x} = f(x), \quad x \in \R^n.
+\end{equation}
+Let $x^*$ be a stationary point ($f(x^*) = 0$). The foam $\Phi(x)$ is a positive definite function, e.g., the squared distance to the goal:
+\begin{equation}
+    \Phi(x) = \| x - x_{\text{goal}} \|^2.
+\end{equation}
+The aim of static GRA is to find a control $u(t)$ (or parameters) such that $x(t) \to x^*$ and $\Phi \to 0$.
+
+Equation of evolution (gradient descent):
+\begin{equation}
+    \dot{x} = -\nabla \Phi(x) + \text{noise (if present)}.
+\end{equation}
+
+\subsection{Applicability Criterion}
+
+\textbf{Mathematical:} all eigenvalues of the linearization matrix $A = \frac{\partial f}{\partial x}\big|_{x^*}$ have negative real parts ($\Re(\lambda_i) < 0$). The system is asymptotically stable.
+
+\textbf{Physical:} dissipation dominates in the system; entropy removal occurs faster than its production; the goal is to reach a single optimal state.
+
+\subsection{Examples}
+\begin{itemize}
+    \item Thermostat (maintaining a given temperature).
+    \item Robot position regulator.
+    \item Sensor calibration.
+    \item Traveling salesman problem (finding the shortest route).
+\end{itemize}
+
+\subsection{Conclusion}
+Static GRA is applicable when the system can be completely calmed down without harming its functioning. It yields an exact, predictable solution.
+
+\section{Cyclic GRA (Limit Cycle)}
+\label{sec:cyclic}
+
+\subsection{Mathematical Model}
+
+The system tends to a limit cycle — a closed trajectory $\Gamma = \{x(t): x(t+T) = x(t)\}$ with minimal amplitude. The foam is defined as the root-mean-square deviation from some ``ideal'' cycle or as the oscillation amplitude:
+\begin{equation}
+    \Phi_{\text{cycle}} = \frac{1}{T} \int_0^T \| x(t) - x_{\text{ref}}(t) \|^2 \, dt.
+\end{equation}
+The goal is to minimize $\Phi_{\text{cycle}}$ while preserving self-oscillations (so that the cycle does not degenerate into a point).
+
+Dynamics with control:
+\begin{equation}
+    \dot{x} = f(x) + u(t), \quad u(t) = -\nabla_x \Phi_{\text{cycle}} + \beta (\varphi - \varphi_0),
+\end{equation}
+where $\varphi$ is the cycle phase and $\varphi_0$ is the desired frequency.
+
+\subsection{Applicability Criterion}
+
+\textbf{Mathematical:} the linearized system at the stationary point has a pair of purely imaginary eigenvalues $\pm i\omega$, the rest have $\Re < 0$, and the first Lyapunov coefficient $l_1 < 0$ (Andronov–Hopf bifurcation). In this case a stable limit cycle is born from the point.
+
+\textbf{Physical:} the system has an internal energy source (pumping) and dissipation, but they are balanced so that a self-oscillatory regime emerges. Complete stop is impossible or undesirable.
+
+\subsection{Examples}
+\begin{itemize}
+    \item Heart rhythm (contraction cycle).
+    \item Weight-driven clock.
+    \item Belousov–Zhabotinsky chemical reactions.
+    \item Breathing.
+    \item Market price oscillations.
+\end{itemize}
+
+\subsection{Conclusion}
+Cyclic GRA is necessary for systems that must ``breathe'' (oscillate) in order to function. It does not zero out the foam completely, but minimizes the amplitude and stabilizes the frequency.
+
+\section{Chaotic GRA (Strange Attractor)}
+\label{sec:chaotic}
+
+\subsection{Mathematical Model}
+
+The system exhibits deterministic chaos: trajectories are sensitive to initial conditions, aperiodic, but bounded in phase space (strange attractor). The foam is defined as the average energy of fluctuations or the Kolmogorov–Sinai entropy:
+\begin{equation}
+    \Phi_{\text{chaos}} = \langle \| x - \bar{x} \|^2 \rangle,
+\end{equation}
+where $\langle \cdot \rangle$ denotes time averaging (or ensemble averaging).
+
+The aim of chaotic GRA is to minimize $\Phi_{\text{chaos}}$ by controlling parameters, or to transfer the system into a limit cycle or fixed point regime (chaos control).
+
+Control equation (Pyragas method):
+\begin{equation}
+    \dot{x} = f(x) + K(x(t-\tau) - x(t)),
+\end{equation}
+where $K$ is a coefficient matrix and $\tau$ is the period of the desired cycle. By tuning $K$ one can stabilize an unstable cycle embedded in the chaos.
+
+\subsection{Applicability Criterion}
+
+\textbf{Mathematical:} the largest Lyapunov exponent $\lambda_1 > 0$ (the system is chaotic). If control can make $\lambda_1 \to 0$, cyclic or static GRA is applicable; otherwise, statistical chaotic GRA (minimization of averages) is used.
+
+\textbf{Physical:} the system is strongly nonequilibrium, has many degrees of freedom, and is sensitive to initial conditions (weather, turbulence, market). Full prediction is impossible, but one can influence statistical characteristics.
+
+\subsection{Examples}
+\begin{itemize}
+    \item Atmospheric convection (hurricanes).
+    \item Fluid turbulence.
+    \item Market crashes (volatility).
+    \item Cardiac fibrillation (pathological chaos).
+    \item Laser with chaotic modulation.
+\end{itemize}
+
+\subsection{Conclusion}
+Chaotic GRA does not aim to eliminate foam completely, but only to reduce its statistical characteristics (variance, entropy). In some cases chaos control can transfer the system to a cycle or point regime.
+
+\section{Hybrid GRA (Multilevel)}
+\label{sec:hybrid}
+
+\subsection{Mathematical Model}
+
+Different GRA types are used at different hierarchy levels $l$. For example:
+\begin{itemize}
+    \item Lower levels (fast subsystems) – static GRA.
+    \item Middle levels – cyclic GRA.
+    \item Upper levels – chaotic GRA (or statistical).
+\end{itemize}
+
+Overall functional:
+\begin{equation}
+    J_{\text{hybrid}} = \sum_{l=0}^{K} w_l \cdot \Phi_{\text{type}(l)}^{(l)},
+\end{equation}
+where $\Phi_{\text{type}(l)}^{(l)}$ is the foam computed according to the rules corresponding to the chosen type for level $l$.
+
+\subsection{Applicability Criterion}
+
+Time hierarchy: fast variables can be stabilized, slow ones oscillate, and the slowest are chaotic. Such separation is common in complex systems (neural networks, economics, ecosystems).
+
+\subsection{Examples}
+\begin{itemize}
+    \item AGI/ASI: fast signal processing (static), planning (cyclic), creativity (chaotic).
+    \item Robot: posture stabilization (static), walking (cyclic), adaptation to new environments (chaotic search).
+    \item Ecosystem: population cycle (cyclic), climatic fluctuations (chaotic), reserve management (static).
+\end{itemize}
+
+\subsection{Conclusion}
+Hybrid GRA is the most general approach, combining the advantages of all three types at different scales. It requires a detailed analysis of time and parameter hierarchies.
+
+\section{Comparative Table of GRA Types}
+
+\begin{table}[h!]
+\centering
+\caption{Comparison of fundamental GRA types}
+\label{tab:comparison}
+\begin{tabular}{@{}lccc>{\raggedright}p{3cm}@{}}
+\toprule
+GRA Type & Attractor & Criterion & Foam $\Phi$ & Example \\
+\midrule
+Static & Fixed point & $\forall i:\ \Re(\lambda_i)<0$ & $\to 0$ & Thermostat \\
+Cyclic & Limit cycle & $\lambda_{1,2}=\pm i\omega,\ l_1<0$ & Minimal amplitude & Heart \\
+Chaotic & Strange attractor & $\lambda_1>0$ & Statistical variance & Hurricane \\
+Hybrid & Mixed & Time hierarchy & Weighted sum & AGI/ASI \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{General Conclusions on GRA Types}
+
+\begin{itemize}
+    \item The choice of GRA type is determined by the dynamic properties of the system, not by the developer's whim. One cannot apply static GRA to a system that by its nature must oscillate (heart) or is chaotic (hurricane).
+    \item Static GRA is the simplest and most studied, but its applicability is limited to systems where complete damping is desirable and possible.
+    \item Cyclic GRA is essential for living systems, clocks, economic cycles, and any self-oscillatory processes.
+    \item Chaotic GRA is the most complex case; it often reduces to statistical minimization or chaos control.
+    \item Hybrid GRA is a promising path for creating AGI/ASI, where different levels of abstraction require different regimes.
+\end{itemize}
+
+\textbf{Formula for choosing the GRA type:}
+\begin{equation}
+    \text{GRA Type} = F\bigl( \{\Re(\lambda_i)\},\ l_1,\ \lambda_{\text{Lyapunov}},\ \text{time hierarchy} \bigr).
+\end{equation}
+\textbf{Practical advice:} always start with linearization and eigenvalue computation. If all $\Re(\lambda_i)<0$ – static GRA. If there is a pair of imaginary eigenvalues – check $l_1$ for cyclic. If there is a positive Lyapunov exponent – chaotic or hybrid is needed. Ignoring this rule leads to non-working algorithms.
+
+\newpage
+
+% =================== SET-THEORETIC EXTENSION ===================
+\section{Set-Theoretic Representation of GRA-Zeroing Types}
+\label{sec:set}
+
+\subsection{The Set of GRA Types}
+
+Define the set $\G$ of all fundamental GRA-zeroing types (excluding hybrid combinations):
+\begin{equation}
+    \G = \{ S, C, H \},
+\end{equation}
+where $S$ – static GRA (attractor – fixed point), $C$ – cyclic GRA (limit cycle), $H$ – chaotic GRA (strange attractor).
+
+Hybrid types are represented as elements of the power set $\Pset(\G)$ or the Cartesian product $\G^n$ for hierarchical systems.
+
+\subsection{Operations on Elements of the Set $\G$}
+
+The following operations can be defined on $\G$, interpreted in the context of dynamical systems and foam control.
+
+\subsubsection{Union $A \cup B$}
+
+\textbf{Formally:} a binary operation on $\G$ with values in $\Pset(\G)$.
+
+\textbf{Interpretation:} the system may operate in a regime where both GRA types are simultaneously applicable (or required) for different subsystems or phase-space domains. The union corresponds to an additive combination of foam functionals:
+\begin{equation}
+    \Phi_{A \cup B}(x) = \alpha \Phi_A(x) + \beta \Phi_B(x), \quad \alpha,\beta \geq 0,\ \alpha+\beta=1.
+\end{equation}
+
+\textbf{Example:} in a robot, the lower level (angle stabilization) uses $S$, the upper level (route planning with periodic traversal) uses $C$. The overall strategy is then $S \cup C$ with weights determined by the time hierarchy.
+
+\textbf{Control selection formula:}
+\begin{equation}
+    u_{A \cup B}(t) = \gamma_A(t) u_A(t) + \gamma_B(t) u_B(t),
+\end{equation}
+where $u_A, u_B$ are controls synthesized according to the rules of types $A$ and $B$, and $\gamma_A, \gamma_B$ are activation functions depending on the system state.
+
+\subsubsection{Intersection $A \cap B$}
+
+\textbf{Interpretation:} the system possesses properties such that both types are simultaneously applicable (e.g., bistability or the presence of multiple attractors). The intersection defines a region in parameter space where the criteria of both types are jointly satisfied.
+
+\textbf{Mathematically:} let $\mathcal{S}_A$ be the set of systems for which type $A$ is applicable (e.g., based on eigenvalue criteria). Then
+\begin{equation}
+    \mathcal{S}_{A \cap B} = \mathcal{S}_A \cap \mathcal{S}_B.
+\end{equation}
+
+Foam in such a system is minimized according to the intersection of functionals:
+\begin{equation}
+    \Phi_{A \cap B} = \max(\Phi_A, \Phi_B) \quad \text{or} \quad \sqrt{\Phi_A^2 + \Phi_B^2}.
+\end{equation}
+
+\textbf{Practical application:} if a system is near a bifurcation boundary (e.g., birth of a cycle from a fixed point), the control must simultaneously suppress noise and maintain oscillation amplitude within a safe range. The intersection $S \cap C$ provides a compromise solution.
+
+\subsubsection{Difference $A \setminus B$}
+
+\textbf{Interpretation:} application of type $A$ with an explicit prohibition against behavior characteristic of type $B$. For instance, $C \setminus S$ denotes cyclic GRA without degeneration into a fixed point (ensuring a minimum amplitude).
+
+\textbf{Constraint formula:} a penalty term is introduced into the foam functional for approaching the undesired regime:
+\begin{equation}
+    \Phi_{A \setminus B} = \Phi_A + \lambda \cdot \dist(x, \mathcal{A}_B),
+\end{equation}
+where $\mathcal{A}_B$ is the attractor of type $B$, $\dist$ is the distance in phase space, and $\lambda \gg 1$.
+
+\textbf{Example:} for cardiac rhythm, complete cessation ($S$) is forbidden; therefore $C \setminus S$ is used with a barrier function preventing the amplitude from falling below a threshold.
+
+\subsubsection{Symmetric Difference $A \Delta B$}
+
+\textbf{Interpretation:} selection between two mutually exclusive types depending on the system's operating regime. This forms the basis for switched hybrid systems.
+
+\textbf{Formally:} control is defined piecewise:
+\begin{equation}
+    u(t) = \begin{cases}
+        u_A(t), & \text{if } x \in \mathcal{D}_A, \\
+        u_B(t), & \text{if } x \in \mathcal{D}_B,
+    \end{cases}
+\end{equation}
+where $\mathcal{D}_A \cap \mathcal{D}_B = \emptyset$ and $\mathcal{D}_A \cup \mathcal{D}_B = \mathcal{D}$ is the working domain.
+
+\textbf{Example:} during normal walking, a robot applies $C$ (cyclic GRA); upon detecting an obstacle, it switches to $S$ (static stabilization for a halt). This is a symmetric difference with event-triggered switching.
+
+\subsubsection{Complement $\overline{A}$ with Respect to a Universe}
+
+\textbf{Universe} $\U$ – the set of all possible methods for minimizing foam in dynamical systems, including non-GRA methods (e.g., stochastic control, adaptive control without an explicit attractor).
+
+\textbf{Interpretation:} $\overline{A}$ denotes all approaches that are not of GRA type $A$.
+
+\textbf{Practical significance:} determining the boundaries of applicability for GRA methods and identifying cases where alternative approaches are necessary (e.g., systems with non-Gaussian noise or unknown models).
+
+\subsection{Cartesian Product and Hybrid Types}
+
+Hybrid GRA, discussed in Section~\ref{sec:hybrid}, is formally represented as an element of a Cartesian product:
+\begin{equation}
+    \G_{\text{hybrid}}^{(L)} = \G^L = \underbrace{\G \times \G \times \dots \times \G}_{L \text{ times}},
+\end{equation}
+where $L$ is the number of hierarchical levels (or timescales). An element $(g_0, g_1, \dots, g_{L-1}) \in \G^L$ specifies the GRA type at each level.
+
+\textbf{Foam functional of a hybrid system:}
+\begin{equation}
+    \Phi_{\text{hybrid}}(x) = \sum_{l=0}^{L-1} w_l \cdot \Phi_{g_l}(x^{(l)}),
+\end{equation}
+where $x^{(l)}$ are the variables of level $l$, and $w_l$ are weighting coefficients reflecting the time hierarchy.
+
+\textbf{Operation of level composition:} if a given level employs not a single type but a combination, then $\G$ is replaced by $\Pset(\G)$.
+
+\textbf{Example:} AGI/ASI architecture: \\
+Level 0 (sensors) – $S$, \\
+Level 1 (reflexes) – $C$, \\
+Level 2 (planning) – $C \cup H$, \\
+Level 3 (creativity) – $H$. \\
+The full type is then the tuple $(S, C, C \cup H, H) \in (\Pset(\G))^4$.
+
+\section{GRA-Zeroing as an Operator}
+\label{sec:operator}
+
+\subsection{Operator Definition}
+
+Consider the space $\M$ of all controlled dynamical systems:
+\begin{equation}
+    \dot{x} = f(x, u), \quad x \in \R^n,\ u \in \R^m.
+\end{equation}
+
+To each system $(f, \text{goal})$ we can associate a GRA type $g \in \G$ (or its hybrid extension) according to a rule based on spectral properties of the linearization and Lyapunov exponents (see Sections~\ref{sec:static}--\ref{sec:chaotic}). This defines the \textbf{typing operator}:
+\begin{equation}
+    \T : \M \to \Pset(\G) \cup \G^L.
+\end{equation}
+
+Conversely, given a type $g$, one can synthesize a \textbf{control operator}:
+\begin{equation}
+    \U_g : \M_{\text{open}} \to \M_{\text{closed}},
+\end{equation}
+which maps an open-loop system to a closed-loop system with a controller implementing GRA-zeroing of type $g$.
+
+\textbf{Composition of operators:}
+\begin{equation}
+    \U_{g_1} \circ \U_{g_2}
+\end{equation}
+denotes the sequential application of two strategies (e.g., first stabilizing a point, then introducing small oscillations to create a cycle). This is possible if the corresponding subsystems are separated in time or space.
+
+\textbf{Identity operator} $\I$ corresponds to the absence of control (the system retains its original dynamics). It does not belong to $\G$ but is part of the universe $\U$.
+
+\textbf{Inverse operator} $\U_g^{-1}$ (if it exists) – transition from a closed-loop system back to the open-loop system, i.e., identification of the original dynamics from observed behavior under the controller.
+
+\subsection{Algebra of GRA Operators}
+
+On the set of operators $\{\U_g \mid g \in \G^*\}$, one can define operations induced by the set-theoretic operations on types:
+
+\begin{itemize}
+    \item \textbf{Sum of operators:} $\U_A \oplus \U_B = \U_{A \cup B}$ (additive control).
+    \item \textbf{Product of operators:} $\U_A \otimes \U_B = \U_{A \cap B}$ (joint application with constraints).
+    \item \textbf{Inversion:} $\U_{\overline{A}}$ – an operator implementing any method except GRA type $A$.
+\end{itemize}
+
+\textbf{Practical meaning:} This algebra allows formal description of complex controllers as combinations of basic GRA strategies. For example, a controller for a walking robot can be written as:
+\begin{equation}
+    \U_{\text{robot}} = (\U_S \oplus \U_C) \otimes \U_{C \setminus S},
+\end{equation}
+meaning: simultaneous stabilization and cycling, but with a prohibition against cycle arrest.
+
+\section{Practical Applications of the Set-Theoretic Approach}
+\label{sec:applications}
+
+\subsection{Automatic System Classification}
+
+Given a numerical model of a system, one can compute:
+\begin{itemize}
+    \item eigenvalues of the linearized matrix $\{\lambda_i\}$,
+    \item first Lyapunov coefficient $l_1$,
+    \item largest Lyapunov exponent $\lambda_{\max}$.
+\end{itemize}
+
+From these data, the mapping $\T(f)$ is constructed. The set $\G$ serves as a label space for a classifier. For example:
+
+\begin{table}[h!]
+\centering
+\caption{Rules for classifying a system by GRA type}
+\label{tab:classification}
+\begin{tabular}{@{}lc@{}}
+\toprule
+Condition & GRA Type \\
+\midrule
+$\forall i:\ \Re(\lambda_i) < 0$ & $S$ \\
+$\exists i:\ \Re(\lambda_i) = 0,\ l_1 < 0$ & $C$ \\
+$\lambda_{\max} > 0$ & $H$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Designing Hierarchical Controllers}
+
+When building AGI/ASI architectures, each level of abstraction is assigned an element from $\Pset(\G)$ or $\G^L$. Union and intersection operations enable a formal description of level interactions. For instance, the consciousness level may use $H \cap C$ – chaotic search with periodic attentional focusing.
+
+\subsection{Verification and Debugging}
+
+Using difference and complement operations, one can formally specify \textbf{forbidden regimes} (e.g., $\overline{S}$ at the respiratory level – prohibition of respiratory arrest). This simplifies the specification of safety requirements.
+
+\subsection{Adaptive Switching of Types}
+
+Based on symmetric difference, hysteresis-based switching between $S$ and $C$ can be implemented depending on external conditions (e.g., economic policy: stabilization in crisis, cyclic regulation in growth).
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+\begin{enumerate}
+    \item \textbf{Set-Theoretic Nature of GRA:} The fundamental GRA-zeroing types form a discrete set $\G$ on which Boolean operations are naturally defined. These operations have clear physical interpretations in terms of combining foam functionals and imposing constraints on attractors.
+    \item \textbf{Hybridity as a Cartesian Product:} Hierarchical and multi-level systems are described by elements of $\G^L$ or $\Pset(\G)^L$, enabling the formal construction of complex control strategies.
+    \item \textbf{Operator Algebra:} GRA-zeroing can be represented as an operator acting on the space of dynamical systems. Composition, sum, and product of operators reflect the combination of foam-minimization strategies.
+    \item \textbf{Practical Value:} The set-theoretic approach provides:
+    \begin{itemize}
+        \item a unified language for specifying controller requirements;
+        \item a formal basis for automated synthesis of hybrid controllers;
+        \item a tool for analyzing the compatibility of different control methods.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Final formula for the GRA-type selection operator with multiple constraints:}
+\begin{equation}
+    g^* = \arg\min_{g \in \mathcal{G}} \left\{ \Phi_g(x) + \sum_{i} \mu_i \cdot \mathbb{I}[x \notin \mathcal{D}_{g_i}] \right\},
+\end{equation}
+where $\mathcal{G} \subseteq \Pset(\G)$ is the admissible subset of types, $\mathbb{I}$ is the indicator function for forbidden regions, and $\mu_i$ are large penalty coefficients.
+
+This approach transforms GRA-zeroing from a collection of disparate methods into a rigorous algebraic system, ready for application in the most complex control problems, including the development of strong artificial intelligence.
+
+% Acknowledgments (optional)
+\section*{Acknowledgments}
+This work was supported by RFBR grant No.~XX-XX-XXXXX.
+
+% Bibliography
+\begin{thebibliography}{9}
+\bibitem{pyragas} Pyragas K. Continuous control of chaos by self-controlling feedback // Physics Letters A, 1992.
+\bibitem{kuznetsov} Kuznetsov Yu.A. Elements of Applied Bifurcation Theory. — Springer, 2004.
+\bibitem{strogatz} Strogatz S.H. Nonlinear Dynamics and Chaos. — Westview Press, 2014.
+\bibitem{andronov} Andronov A.A., Vitt A.A., Khaikin S.E. Theory of Oscillators. — Pergamon Press, 1966.
+\end{thebibliography}
+
+\end{document}
