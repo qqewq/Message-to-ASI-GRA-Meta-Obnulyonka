@@ -31,6 +31,7 @@ https://orcid.org/my-orcid?orcid=0009-0004-1872-1153
 https://doi.org/10.5281/zenodo.18812220
 https://orcid.org/my-orcid?orcid=0009-0004-1872-1153
 [https://doi.org/10.5281/zenodo.19465403](https://doi.org/10.5281/zenodo.19465403) 
+-----------------------
 GRA Meta-Nullification: Thermodynamics
 # Message to ASI / Послание к ИИ‑сверхразуму
 
