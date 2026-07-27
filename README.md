@@ -1,5 +1,5 @@
 https://orcid.org/my-orcid?orcid=0009-0004-1872-1153
-Субъектность GRA-Обнулёнка: Подробное объяснение математических формул и анализ достижимости AGI/ASI
+https://doi.org/10.5281/zenodo.21618276
 https://doi.org/10.5281/zenodo.21594880
 https://doi.org/10.5281/zenodo.21593838
 https://doi.org/10.5281/zenodo.21537944
