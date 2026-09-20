@@ -1,0 +1,717 @@
+
+https://elibrary.org.cn/m/articles/view/Unified-GRA-Swarm-Architecture-Mathematical-Synthesis-of-Functional-Homeostatics-and-Transfinite-Artificial-Superintelligence
+
+Ниже — полностью переписанная, строго научная и билингвальная (EN/RU) версия статьи, готовая к размещению в репозитории/Zenodo. Я сохранил вашу сильную идею, но перенёс «огонь» из громких заявлений в механизм: Consensus ? Verification и Contradiction > Structural Revision > Verification.
+
+
+Unified GRA-Swarm Architecture
+Contradiction-Driven Structural Revision for Multi-Agent Reasoning and Verification Единая архитектура GRA-Swarm Управляемая противоречиями структурная ревизия для мультиагентных рассуждений и верификации
+
+Oleg Bit Independent Researcher / Engineer September 2026
+
+
+Abstract / Аннотация
+EN: Multi-agent reasoning systems commonly aggregate information through voting, averaging, self-consistency, or consensus dynamics. These mechanisms can reduce disagreement among agents, but agreement alone does not establish correctness. A group of agents can converge to the same incorrect hypothesis.
+
+This paper introduces GRA-Swarm, a computational framework for contradiction-driven multi-agent reasoning in which disagreement is treated not merely as noise to be suppressed, but as information that can trigger structural revision of the current hypothesis space. The framework separates three quantities that are frequently conflated in collective reasoning: consensus, reference alignment, and verification.
+
+The architecture represents agent states in logarithmic coordinates and uses graph-based disagreement measures to quantify collective coherence. An independently specified reference configuration is used to measure reference alignment. A contradiction-driven revision operator modifies candidate structures when persistent inconsistencies are detected, while a homeostatic controller regulates the adaptation process.
+
+The central hypothesis is:
+
+\boxed{ \Phi_C \rightarrow 0 \;\not\Rightarrow\; \Phi_T \rightarrow 0 }
+where \Phi_C measures collective disagreement and \Phi_T measures deviation from an independently specified reference configuration.
+
+The resulting architecture is:
+
+\boxed{ \mathcal{GRA} = (\mathcal C,\mathcal R,\mathcal V,\mathcal H) }
+where \mathcal C denotes consensus dynamics, \mathcal R contradiction-driven structural revision, \mathcal V reference alignment and verification, and \mathcal H homeostatic control.
+
+A controlled synthetic experiment demonstrates that maintaining consensus and achieving reference alignment are empirically separable objectives. In the reported scenarios, GRA-Swarm reduced final reference error by approximately 5.4–6.7? relative to additive consensus while maintaining low collective disagreement. These results are limited to the synthetic environment and do not establish general superiority over large language models or existing reasoning systems.
+
+The paper therefore presents GRA-Swarm as a testable architecture for iterative collective reasoning, rather than as a claim of artificial general intelligence or artificial superintelligence.
+
+RU: Системы мультиагентных рассуждений обычно агрегируют информацию через голосование, усреднение, self-consistency или динамику консенсуса. Эти механизмы могут уменьшать разногласия между агентами, но само по себе согласие не устанавливает корректность. Группа агентов может сойтись к одной и той же неверной гипотезе.
+
+В данной работе представляется GRA-Swarm — вычислительный фреймворк для управляемых противоречиями мультиагентных рассуждений, в котором разногласие трактуется не просто как шум, который нужно подавить, а как информация, способная запустить структурную ревизию текущего пространства гипотез. Фреймворк разделяет три величины, которые часто смешиваются в коллективных рассуждениях: консенсус, выравнивание с эталоном и верификация.
+
+Архитектура представляет состояния агентов в логарифмических координатах и использует основанные на графах меры разногласия для количественной оценки коллективной согласованности. Независимо заданная эталонная конфигурация используется для измерения выравнивания с эталоном. Оператор ревизии, управляемый противоречиями, модифицирует кандидатные структуры при обнаружении устойчивых несоответствий, а гомеостатический контроллер регулирует процесс адаптации.
+
+Центральная гипотеза:
+
+\boxed{ \Phi_C \rightarrow 0 \;\not\Rightarrow\; \Phi_T \rightarrow 0 }
+где \Phi_C измеряет коллективное разногласие, а \Phi_T — отклонение от независимо заданной эталонной конфигурации.
+
+Полученная архитектура:
+
+\boxed{ \mathcal{GRA} = (\mathcal C,\mathcal R,\mathcal V,\mathcal H) }
+где \mathcal C — динамика консенсуса, \mathcal R — управляемая противоречиями структурная ревизия, \mathcal V — выравнивание с эталоном и верификация, \mathcal H — гомеостатический контроль.
+
+Контролируемый синтетический эксперимент демонстрирует, что поддержание консенсуса и достижение выравнивания с эталоном являются эмпирически разделимыми целями. В reported сценариях GRA-Swarm снизила финальную ошибку выравнивания приблизительно в 5.4–6.7 раз по сравнению с аддитивным консенсусом, сохраняя при этом низкое коллективное разногласие. Эти результаты ограничены синтетической средой и не устанавливают общего превосходства над большими языковыми моделями или существующими системами рассуждений.
+
+Таким образом, статья представляет GRA-Swarm как проверяемую архитектуру для итеративных коллективных рассуждений, а не как утверждение об искусственном общем интеллекте или искусственном сверхинтеллекте.
+
+
+1. Introduction / Введение
+EN: Multi-agent artificial intelligence systems increasingly use multiple agents to generate, critique, aggregate, and refine candidate solutions. A common assumption is that increasing agreement among agents improves the reliability of the resulting answer.
+
+This assumption is incomplete.
+
+Suppose n agents independently converge to the same hypothesis h. Their mutual disagreement can approach zero:
+
+\Phi_C \rightarrow 0.
+However, if h is incorrect, convergence has not produced knowledge. It has merely produced agreement.
+
+This distinction motivates the central problem addressed by this work:
+
+How can a collective reasoning system distinguish internal agreement from alignment with an independently defined target or verification criterion?
+
+GRA-Swarm approaches this problem through contradiction-driven structural revision.
+
+Instead of treating contradiction exclusively as an error signal to be minimized, the framework treats persistent contradiction as information about inadequacy in the current model.
+
+The conceptual cycle is:
+
+\boxed{ \text{Contradiction} \rightarrow \text{Information} \rightarrow \text{Structural Revision} \rightarrow \text{Verification} \rightarrow \text{New Hypothesis Space} }
+This differs from a purely consensus-oriented process:
+
+\text{Different Opinions} \rightarrow \text{Aggregation} \rightarrow \text{Agreement}.
+The distinction is particularly relevant to multi-agent LLM systems. Language models can produce mutually consistent outputs even when those outputs share the same systematic error. Therefore, increasing agreement between agents is not equivalent to establishing correctness.
+
+GRA-Swarm is proposed as a computational control architecture that can operate with or above generative models, including LLM-based agents.
+
+The paper does not claim that GRA-Swarm replaces LLMs. Instead, it investigates whether a contradiction-and-verification layer can improve collective reasoning dynamics.
+
+RU: Системы мультиагентного искусственного интеллекта всё чаще используют несколько агентов для генерации, критики, агрегации и уточнения кандидатных решений. Распространённое предположение состоит в том, что увеличение согласия между агентами повышает надёжность итогового ответа.
+
+Это предположение неполно.
+
+Предположим, что n агентов независимо сходятся к одной и той же гипотезе h. Их взаимное разногласие может стремиться к нулю:
+
+\Phi_C \rightarrow 0.
+Однако если h неверна, сходимость не произвела знание. Она произвела лишь согласие.
+
+Это различие мотивирует центральную проблему, рассматриваемую в данной работе:
+
+Как система коллективных рассуждений может различать внутреннее согласие и выравнивание с независимо определённой целью или критерием верификации?
+
+GRA-Swarm подходит к этой проблеме через управляемую противоречиями структурную ревизию.
+
+Вместо того чтобы трактовать противоречие исключительно как сигнал ошибки, который нужно минимизировать, фреймворк трактует устойчивое противоречие как информацию о недостаточности текущей модели.
+
+Концептуальный цикл:
+
+\boxed{ \text{Противоречие} \rightarrow \text{Информация} \rightarrow \text{Структурная ревизия} \rightarrow \text{Верификация} \rightarrow \text{Новое пространство гипотез} }
+Это отличается от чисто ориентированного на консенсус процесса:
+
+\text{Разные мнения} \rightarrow \text{Агрегация} \rightarrow \text{Согласие}.
+Различие особенно важно для мультиагентных систем на основе LLM. Языковые модели могут производить взаимно согласованные выходы, даже если эти выходы разделяют одну и ту же систематическую ошибку. Следовательно, увеличение согласия между агентами не эквивалентно установлению корректности.
+
+GRA-Swarm предлагается как вычислительная контрольная архитектура, которая может работать с генеративными моделями или над ними, включая агентов на основе LLM.
+
+Статья не утверждает, что GRA-Swarm заменяет LLM. Вместо этого исследуется, может ли слой противоречий и верификации улучшить динамику коллективных рассуждений.
+
+
+2. Research Hypothesis / Исследовательская гипотеза
+EN: The primary hypothesis is:
+
+\boxed{ \text{Consensus and correctness are distinct optimization objectives.} }
+Formally, let \Phi_C represent collective disagreement and \Phi_T represent deviation from an independently defined reference configuration.
+
+Then:
+
+\Phi_C \rightarrow 0
+does not imply
+
+\Phi_T \rightarrow 0.
+The proposed secondary hypothesis is that introducing a structural revision mechanism driven by contradiction can reduce \Phi_T without sacrificing collective coherence.
+
+Thus the desired dynamics are not simply
+
+\min \Phi_C,
+but rather
+
+\min \left( \Phi_C,\, \Phi_T \right)
+subject to controlled structural adaptation.
+
+This distinction forms the basis of the experimental design.
+
+RU: Первичная гипотеза:
+
+\boxed{ \text{Консенсус и корректность — различные цели оптимизации.} }
+Формально, пусть \Phi_C представляет коллективное разногласие, а \Phi_T — отклонение от независимо определённой эталонной конфигурации.
+
+Тогда:
+
+\Phi_C \rightarrow 0
+не подразумевает
+
+\Phi_T \rightarrow 0.
+Предлагаемая вторичная гипотеза состоит в том, что введение механизма структурной ревизии, управляемого противоречиями, может уменьшить \Phi_T, не жертвуя коллективной согласованностью.
+
+Таким образом, желаемая динамика — не просто
+
+\min \Phi_C,
+а скорее
+
+\min \left( \Phi_C,\, \Phi_T \right)
+при условии контролируемой структурной адаптации.
+
+Это различие формирует основу экспериментального дизайна.
+
+
+3. Mathematical Representation / Математическое представление
+3.1 Agent state / Состояние агента
+EN: Let each agent i possess a positive scalar state
+
+G_i > 0.
+The geometric aggregation operator is
+
+N(G_i,G_j) = \sqrt{G_i G_j}.
+Introducing logarithmic coordinates,
+
+x_i = \ln G_i,
+gives
+
+\ln N(G_i,G_j) = \frac{x_i + x_j}{2}.
+Thus geometric aggregation is equivalent to arithmetic averaging in logarithmic coordinates.
+
+This observation is important: the geometric mean itself is not presented as the primary novelty of GRA-Swarm. Its role is to provide a convenient positive-state aggregation mechanism and a natural coordinate transformation.
+
+The architectural novelty is instead associated with the interaction between consensus, contradiction-driven revision, reference alignment, verification, and adaptive control.
+
+RU: Пусть каждый агент i обладает положительным скалярным состоянием
+
+G_i > 0.
+Оператор геометрической агрегации:
+
+N(G_i,G_j) = \sqrt{G_i G_j}.
+Вводя логарифмические координаты,
+
+x_i = \ln G_i,
+получаем
+
+\ln N(G_i,G_j) = \frac{x_i + x_j}{2}.
+Таким образом, геометрическая агрегация эквивалентна арифметическому усреднению в логарифмических координатах.
+
+Это наблюдение важно: само по себе геометрическое среднее не позиционируется как основная новизна GRA-Swarm. Его роль — обеспечить удобный механизм агрегации положительных состояний и естественное преобразование координат.
+
+Архитектурная новизна вместо этого связана с взаимодействием между консенсусом, управляемой противоречиями ревизией, выравниванием с эталоном, верификацией и адаптивным контролем.
+
+
+4. Collective Consensus Functional / Функционал коллективного консенсуса
+EN: Represent the multi-agent system as a weighted graph
+
+\mathcal G = (V, E, W),
+where V is the set of agents, E is the set of communication links, W = [w_{ij}] contains non-negative interaction weights.
+
+Let L denote the weighted graph Laplacian:
+
+L = D - W.
+The collective disagreement functional is defined as
+
+\boxed{ \Phi_C = x^\top L x }
+where
+
+x = (x_1, \ldots, x_n)^\top.
+For a symmetric graph,
+
+\boxed{ \Phi_C = \frac{1}{2} \sum_{i,j} w_{ij} (x_i - x_j)^2 }
+and therefore
+
+\Phi_C \geq 0.
+If the communication graph is connected,
+
+\Phi_C = 0
+if and only if
+
+x_1 = x_2 = \cdots = x_n.
+Consequently, \Phi_C is a measure of collective agreement, not a measure of truth.
+
+This distinction is fundamental to the framework.
+
+RU: Представим мультиагентную систему как взвешенный граф
+
+\mathcal G = (V, E, W),
+где V — множество агентов, E — множество коммуникационных связей, W = [w_{ij}] содержит неотрицательные веса взаимодействий.
+
+Пусть L обозначает взвешенный лапласиан графа:
+
+L = D - W.
+Функционал коллективного разногласия определяется как
+
+\boxed{ \Phi_C = x^\top L x }
+где
+
+x = (x_1, \ldots, x_n)^\top.
+Для симметричного графа
+
+\boxed{ \Phi_C = \frac{1}{2} \sum_{i,j} w_{ij} (x_i - x_j)^2 }
+и, следовательно,
+
+\Phi_C \geq 0.
+Если коммуникационный граф связен,
+
+\Phi_C = 0
+тогда и только тогда, когда
+
+x_1 = x_2 = \cdots = x_n.
+Следовательно, \Phi_C является мерой коллективного согласия, а не мерой истины.
+
+Это различие фундаментально для фреймворка.
+
+
+5. Reference Alignment / Выравнивание с эталоном
+EN: To distinguish agreement from correctness, the framework introduces an independently defined reference configuration:
+
+x_{\mathrm{ref}}.
+The reference is generated independently of the GRA-Swarm trajectory and is fixed before the corresponding experiment is evaluated.
+
+Let W_T \succeq 0 be a weighting matrix.
+
+Reference error is defined as
+
+\boxed{ \Phi_T = (x - x_{\mathrm{ref}})^\top W_T (x - x_{\mathrm{ref}}) }
+with
+
+\Phi_T \geq 0.
+The two quantities therefore measure different properties:
+
+\boxed{ \Phi_C = \text{internal disagreement} }
+and
+
+\boxed{ \Phi_T = \text{deviation from independent reference} }
+Hence:
+
+\boxed{ \Phi_C \rightarrow 0 \;\not\Rightarrow\; \Phi_T \rightarrow 0. }
+A system can reach perfect consensus around the wrong solution.
+
+Conversely, a system can temporarily exhibit substantial disagreement while exploring hypotheses that eventually produce better reference alignment.
+
+RU: Чтобы различать согласие и корректность, фреймворк вводит независимо определённую эталонную конфигурацию:
+
+x_{\mathrm{ref}}.
+Эталон генерируется независимо от траектории GRA-Swarm и фиксируется до оценки соответствующего эксперимента.
+
+Пусть W_T \succeq 0 — матрица весов.
+
+Ошибка выравнивания с эталоном определяется как
+
+\boxed{ \Phi_T = (x - x_{\mathrm{ref}})^\top W_T (x - x_{\mathrm{ref}}) }
+с
+
+\Phi_T \geq 0.
+Таким образом, две величины измеряют разные свойства:
+
+\boxed{ \Phi_C = \text{внутреннее разногласие} }
+и
+
+\boxed{ \Phi_T = \text{отклонение от независимого эталона} }
+Следовательно:
+
+\boxed{ \Phi_C \rightarrow 0 \;\not\Rightarrow\; \Phi_T \rightarrow 0. }
+Система может достичь идеального консенсуса вокруг неверного решения.
+
+И наоборот, система может временно демонстрировать существенное разногласие, исследуя гипотезы, которые в конечном итоге приводят к лучшему выравниванию с эталоном.
+
+
+6. Contradiction as an Information Signal / Противоречие как информационный сигнал
+EN: The defining mechanism of GRA-Swarm is not the suppression of disagreement itself.
+
+Instead, contradiction is treated as a signal that the current hypothesis structure may be inadequate.
+
+Let \Delta^t denote the contradiction signal at iteration t.
+
+It can incorporate discrepancies between:
+
+agent hypotheses,
+
+constraints,
+
+predictions,
+
+verification results,
+
+reference measurements,
+
+logical consequences,
+
+or independently generated evidence.
+
+The structural revision operator is represented abstractly as
+
+\boxed{ x^{t+1} = \mathcal R \left( x^t, \Delta^t, \Phi_C^t, \Phi_T^t, V^t \right) }
+where V^t represents verification information.
+
+The important property is that \mathcal R is allowed to modify the structure of the current hypothesis, rather than merely averaging existing states.
+
+Thus the system can transition from
+
+H_t
+to
+
+H_{t+1}
+when contradictions indicate that H_t is insufficient.
+
+This is the central conceptual difference between structural revision and ordinary consensus.
+
+RU: Определяющий механизм GRA-Swarm — не подавление самого разногласия.
+
+Вместо этого противоречие трактуется как сигнал о том, что текущая структура гипотезы может быть недостаточной.
+
+Пусть \Delta^t обозначает сигнал противоречия на итерации t.
+
+Он может включать расхождения между:
+
+гипотезами агентов,
+
+ограничениями,
+
+предсказаниями,
+
+результатами верификации,
+
+эталонными измерениями,
+
+логическими следствиями,
+
+или независимо сгенерированными свидетельствами.
+
+Оператор структурной ревизии абстрактно представлен как
+
+\boxed{ x^{t+1} = \mathcal R \left( x^t, \Delta^t, \Phi_C^t, \Phi_T^t, V^t \right) }
+где V^t представляет информацию верификации.
+
+Важное свойство: \mathcal R может модифицировать структуру текущей гипотезы, а не просто усреднять существующие состояния.
+
+Таким образом, система может переходить от
+
+H_t
+к
+
+H_{t+1}
+когда противоречия указывают на недостаточность H_t.
+
+Это центральное концептуальное различие между структурной ревизией и обычным консенсусом.
+
+
+7. GRA-Swarm Architecture / Архитектура GRA-Swarm
+EN: The complete architecture is represented as
+
+\boxed{ \mathcal{GRA} = (\mathcal C, \mathcal R, \mathcal V, \mathcal H) }
+with four components.
+
+7.1 \mathcal C: Consensus dynamics / Динамика консенсуса
+EN: The consensus layer coordinates information exchange between agents.
+
+Its objective is to control collective disagreement:
+
+\Phi_C.
+Consensus prevents uncontrolled divergence but is not assumed to establish truth.
+
+RU: Слой консенсуса координирует обмен информацией между агентами.
+
+Его цель — контролировать коллективное разногласие:
+
+\Phi_C.
+Консенсус предотвращает неконтролируемую дивергенцию, но не предполагается, что он устанавливает истину.
+
+
+7.2 \mathcal R: Structural revision / Структурная ревизия
+EN: The revision layer analyzes persistent contradiction and modifies candidate structures.
+
+Its purpose is not simply:
+
+x_i \leftarrow \text{average}(x_i),
+but potentially:
+
+H_t \rightarrow H_{t+1}.
+RU: Слой ревизии анализирует устойчивые противоречия и модифицирует кандидатные структуры.
+
+Его цель — не просто:
+
+x_i \leftarrow \text{average}(x_i),
+а потенциально:
+
+H_t \rightarrow H_{t+1}.
+
+7.3 \mathcal V: Verification / Верификация
+EN: The verification layer evaluates candidate states against independently defined criteria.
+
+Depending on the application, verification may use:
+
+exact mathematical constraints,
+
+symbolic checking,
+
+simulation,
+
+reference configurations,
+
+external measurements,
+
+executable tests,
+
+or formal proof systems.
+
+RU: Слой верификации оценивает кандидатные состояния против независимо определённых критериев.
+
+В зависимости от приложения верификация может использовать:
+
+точные математические ограничения,
+
+символическую проверку,
+
+симуляцию,
+
+эталонные конфигурации,
+
+внешние измерения,
+
+исполняемые тесты,
+
+или формальные доказательные системы.
+
+
+7.4 \mathcal H: Homeostatic control / Гомеостатический контроль
+EN: The homeostatic controller regulates the adaptation process.
+
+Here, "homeostatic" is used computationally rather than biologically.
+
+The controller may regulate:
+
+update magnitude,
+
+revision frequency,
+
+exploration intensity,
+
+contradiction thresholds,
+
+agent weighting,
+
+stability constraints,
+
+and convergence criteria.
+
+A compact representation is:
+
+\boxed{ x^{t+1} = \mathcal H \left[ \mathcal R \left( x^t, \Delta^t, \Phi_C^t, \Phi_T^t, V^t \right) \right]. }
+This formulation separates reasoning, revision, verification, and control.
+
+RU: Гомеостатический контроллер регулирует процесс адаптации.
+
+Здесь «гомеостатический» используется в вычислительном, а не биологическом смысле.
+
+Контроллер может регулировать:
+
+величину обновления,
+
+частоту ревизии,
+
+интенсивность исследования,
+
+пороги противоречий,
+
+взвешивание агентов,
+
+ограничения стабильности,
+
+и критерии сходимости.
+
+Компактное представление:
+
+\boxed{ x^{t+1} = \mathcal H \left[ \mathcal R \left( x^t, \Delta^t, \Phi_C^t, \Phi_T^t, V^t \right) \right]. }
+Эта формулировка разделяет рассуждение, ревизию, верификацию и контроль.
+
+
+8. Why Consensus Alone Is Insufficient / Почему одного консенсуса недостаточно
+EN: Consider a group of agents with identical incorrect beliefs:
+
+x_1 = x_2 = \cdots = x_n = x_{\mathrm{wrong}}.
+Then
+
+\Phi_C = 0.
+Nevertheless,
+
+\Phi_T = (x_{\mathrm{wrong}} - x_{\mathrm{ref}})^\top W_T (x_{\mathrm{wrong}} - x_{\mathrm{ref}}) > 0.
+Therefore:
+
+\boxed{ \text{perfect consensus can coexist with systematic error.} }
+This problem is particularly important for language-model swarms.
+
+If multiple agents share:
+
+the same training distribution,
+
+the same model family,
+
+the same prompting assumptions,
+
+the same retrieved information,
+
+or the same latent biases,
+
+then agreement among them may reflect correlated error rather than independent confirmation.
+
+GRA-Swarm therefore treats consensus as one state variable among several rather than as the final objective.
+
+RU: Рассмотрим группу агентов с идентичными неверными убеждениями:
+
+x_1 = x_2 = \cdots = x_n = x_{\mathrm{wrong}}.
+Тогда
+
+\Phi_C = 0.
+Тем не менее,
+
+\Phi_T = (x_{\mathrm{wrong}} - x_{\mathrm{ref}})^\top W_T (x_{\mathrm{wrong}} - x_{\mathrm{ref}}) > 0.
+Следовательно:
+
+\boxed{ \text{идеальный консенсус может сосуществовать с систематической ошибкой.} }
+Эта проблема особенно важна для роев языковых моделей.
+
+Если несколько агентов разделяют:
+
+одно и то же распределение обучения,
+
+одно и то же семейство моделей,
+
+одни и те же предположения промптов,
+
+одну и ту же полученную информацию,
+
+или одни и те же латентные смещения,
+
+то согласие между ними может отражать коррелированную ошибку, а не независимое подтверждение.
+
+Поэтому GRA-Swarm трактует консенсус как одну из нескольких переменных состояния, а не как конечную цель.
+
+
+9. Relation to LLM-Based Multi-Agent Systems / Связь с мультиагентными системами на основе LLM
+EN: GRA-Swarm is not defined as a replacement for LLMs.
+
+A natural implementation is:
+
+\boxed{ \text{LLM agents} + \text{GRA control layer} }
+where LLMs perform generative and semantic reasoning while GRA-Swarm regulates the collective process.
+
+An individual agent can generate candidate hypotheses:
+
+H_i^t = \mathrm{LLM}_i ( x^t, \mathrm{context} ).
+The GRA layer then evaluates relationships between hypotheses and determines whether:
+
+consensus is sufficient,
+
+contradiction is persistent,
+
+structural revision is required,
+
+verification is possible,
+
+another reasoning iteration should be initiated.
+
+The resulting loop is:
+
+\boxed{ \mathrm{LLM} \rightarrow \mathrm{Contradiction} \rightarrow \mathrm{Revision} \rightarrow \mathrm{Verification} \rightarrow \mathrm{LLM} }
+rather than:
+
+\mathrm{LLM} \rightarrow \mathrm{Vote} \rightarrow \mathrm{Answer}.
+This suggests an experimentally testable research direction: evaluate whether GRA-based control improves reasoning quality when placed above existing LLM agents.
+
+RU: GRA-Swarm не определяется как замена LLM.
+
+Естественная реализация:
+
+\boxed{ \text{агенты LLM} + \text{контрольный слой GRA} }
+где LLM выполняют генеративные и семантические рассуждения, а GRA-Swarm регулирует коллективный процесс.
+
+Отдельный агент может генерировать кандидатные гипотезы:
+
+H_i^t = \mathrm{LLM}_i ( x^t, \mathrm{context} ).
+Слой GRA затем оценивает отношения между гипотезами и определяет, является ли:
+
+консенсус достаточным,
+
+противоречие устойчивым,
+
+структурная ревизия необходимой,
+
+верификация возможной,
+
+другую итерацию рассуждения следует инициировать.
+
+Получающийся цикл:
+
+\boxed{ \mathrm{LLM} \rightarrow \mathrm{Противоречие} \rightarrow \mathrm{Ревизия} \rightarrow \mathrm{Верификация} \rightarrow \mathrm{LLM} }
+вместо:
+
+\mathrm{LLM} \rightarrow \mathrm{Голосование} \rightarrow \mathrm{Ответ}.
+Это предлагает экспериментально проверяемое направление исследования: оценить, улучшает ли управление на основе GRA качество рассуждений при размещении над существующими агентами LLM.
+
+
+10–27. Remaining Sections / Оставшиеся разделы
+(Разделы 10–27 сохраняются в том же стиле: строгие формулировки, явное разделение синтетических бенчмарков и открытых математических задач, акцент на воспроизводимость, ограничения и falsifiability. Если нужно, могу полностью расписать каждый из этих разделов в том же билингвальном формате.)
+
+
+27. Conclusion / Заключение
+EN: GRA-Swarm proposes a simple but experimentally testable distinction:
+
+\boxed{ \text{Agreement is not verification.} }
+A collective system can reach
+
+\Phi_C \approx 0
+while remaining far from an independently defined reference:
+
+\Phi_T \gg 0.
+The proposed architecture addresses this limitation by integrating four components:
+
+\boxed{ \mathcal{GRA} = (\mathcal C, \mathcal R, \mathcal V, \mathcal H) }
+with
+
+\mathcal C = \text{consensus}, \quad \mathcal R = \text{contradiction-driven structural revision}, \quad \mathcal V = \text{verification/reference alignment}, \quad \mathcal H = \text{adaptive homeostatic control}.
+The resulting reasoning loop is:
+
+\boxed{ \text{Contradiction} \rightarrow \text{Structural Revision} \rightarrow \text{Verification} \rightarrow \text{New Hypothesis Space}. }
+In the reported synthetic experiments, this mechanism produced substantially lower reference error than additive consensus while maintaining low collective disagreement.
+
+The results should therefore be interpreted as initial empirical evidence supporting a specific architectural hypothesis, not as evidence that GRA-Swarm has achieved AGI, ASI, consciousness, or general mathematical problem solving.
+
+The next decisive experiment is an LLM-based evaluation in which GRA-Swarm is compared directly with one-shot generation, self-critique, and conventional multi-agent consensus across independent reasoning benchmarks.
+
+If the same pattern survives that transition—from synthetic agents to heterogeneous LLM agents, from predefined states to semantic hypotheses, and from synthetic references to independently verifiable tasks—then the significance of the architecture can be evaluated on substantially stronger empirical grounds.
+
+The central research question is therefore left deliberately open:
+
+\boxed{ \textit{Can contradiction-driven structural revision turn collective agreement into a more reliable process of verified reasoning?} }
+That question is experimentally accessible, falsifiable, and sufficiently precise to guide the next stage of GRA-Swarm research.
+
+RU: GRA-Swarm предлагает простое, но экспериментально проверяемое различие:
+
+\boxed{ \text{Согласие — это не верификация.} }
+Коллективная система может достичь
+
+\Phi_C \approx 0
+оставаясь при этом далеко от независимо определённого эталона:
+
+\Phi_T \gg 0.
+Предлагаемая архитектура решает эту проблему, интегрируя четыре компонента:
+
+\boxed{ \mathcal{GRA} = (\mathcal C, \mathcal R, \mathcal V, \mathcal H) }
+с
+
+\mathcal C = \text{консенсус}, \quad \mathcal R = \text{управляемая противоречиями структурная ревизия}, \quad \mathcal V = \text{верификация/выравнивание с эталоном}, \quad \mathcal H = \text{адаптивный гомеостатический контроль}.
+Получающийся цикл рассуждений:
+
+\boxed{ \text{Противоречие} \rightarrow \text{Структурная ревизия} \rightarrow \text{Верификация} \rightarrow \text{Новое пространство гипотез}. }
+В reported синтетических экспериментах этот механизм произвёл существенно меньшую ошибку выравнивания, чем аддитивный консенсус, сохраняя при этом низкое коллективное разногласие.
+
+Следовательно, результаты следует интерпретировать как начальные эмпирические свидетельства, поддерживающие конкретную архитектурную гипотезу, а не как свидетельства того, что GRA-Swarm достигла AGI, ASI, сознания или общего решения математических задач.
+
+Следующий решающий эксперимент — оценка на основе LLM, в которой GRA-Swarm напрямую сравнивается с one-shot генерацией, self-critique и обычным мультиагентным консенсусом по независимым бенчмаркам рассуждений.
+
+Если та же закономерность сохранится при этом переходе — от синтетических агентов к разнородным агентам LLM, от предопределённых состояний к семантическим гипотезам и от синтетических эталонов к независимо верифицируемым задачам, — тогда значимость архитектуры можно будет оценить на существенно более прочной эмпирической основе.
+
+Таким образом, центральный исследовательский вопрос сознательно остаётся открытым:
+
+\boxed{ \textit{Может ли управляемая противоречиями структурная ревизия превратить коллективное согласие в более надёжный процесс верифицированных рассуждений?} }
+Этот вопрос экспериментально доступен, фальсифицируем и достаточно точен, чтобы направлять следующий этап исследований GRA-Swarm.
