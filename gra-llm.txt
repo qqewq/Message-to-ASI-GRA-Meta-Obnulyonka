@@ -1,0 +1,1118 @@
+LLM-агенты и GRA-агенты: две стороны одной монеты
+От генерации возможностей к проверяемому действию
+LLM Agents and GRA Agents: Two Sides of One Coin
+From Generating Possibilities to Verifiable Action
+RU: Современный ИИ часто обсуждают как гонку за более крупными языковыми моделями: больше параметров, больше данных, больше GPU, больше токенов. Однако для перехода от хорошего ответа к надёжному автономному действию одной генеративной мощности недостаточно. Агенту необходимо не только придумывать планы, объяснения и гипотезы, но и выявлять противоречия, проверять предпосылки, сохранять доказательства и пересматривать ошибочные модели мира.
+
+Эту разницу можно выразить как две взаимодополняющие функции:
+
+\text{Intelligence}
+=
+\text{Generation}
++
+\text{Verification}
++
+\text{Action}
++
+\text{Memory}.
+В этой схеме LLM-агенты преимущественно усиливают генерацию, а GRA-агенты — проверку, согласование и структурный пересмотр.
+
+EN: Modern AI is often framed as a race toward larger language models: more parameters, more data, more GPUs, and more tokens. Yet generative power alone is not enough to move from a good answer to reliable autonomous action. An agent must not only generate plans, explanations, and hypotheses; it must also identify contradictions, test assumptions, preserve evidence, and revise flawed world models.
+
+This distinction can be expressed as two complementary functions:
+
+\text{Intelligence}
+=
+\text{Generation}
++
+\text{Verification}
++
+\text{Action}
++
+\text{Memory}.
+In this view, LLM agents primarily amplify generation, while GRA agents amplify verification, coherence, and structural revision.
+
+1. Не конкуренты, а две функции интеллекта
+1. Not competitors, but two functions of intelligence
+RU: Важно не делать ложный вывод, будто LLM-агенты и GRA-агенты обязательно являются двумя взаимоисключающими видами ИИ.
+
+LLM-agent — это обычно система, где языковая модель играет роль главного когнитивного ядра. Она интерпретирует запрос, строит план, вызывает инструменты, читает документы, пишет код и формирует ответ.
+
+GRA-agent — это система, где центральным управляющим принципом является явная работа с противоречиями: система измеряет конфликт между гипотезами, данными, ограничениями и результатами действий, затем локализует причину и выполняет структурную ревизию.
+
+Следовательно, наиболее сильная архитектура не выглядит так:
+
+\text{LLM-agent} \quad \text{vs} \quad \text{GRA-agent}.
+Она выглядит так:
+
+\text{GRA-enhanced agent}
+=
+\text{LLM}
++
+\text{Memory}
++
+\text{Tools}
++
+\text{Planner}
++
+\text{Contradiction Engine}
++
+\text{Verifier}
++
+\text{Evidence Graph}.
+EN: It is important not to make the false conclusion that LLM agents and GRA agents must be two mutually exclusive species of AI.
+
+An LLM agent is typically a system in which a language model acts as the primary cognitive core. It interprets requests, creates plans, calls tools, reads documents, writes code, and produces responses.
+
+A GRA agent is a system whose central control principle is explicit contradiction handling: it measures conflict among hypotheses, data, constraints, and action outcomes; then it localizes the cause and performs structural revision.
+
+Therefore, the strongest architecture is not:
+
+\text{LLM-agent} \quad \text{vs} \quad \text{GRA-agent}.
+It is:
+
+\text{GRA-enhanced agent}
+=
+\text{LLM}
++
+\text{Memory}
++
+\text{Tools}
++
+\text{Planner}
++
+\text{Contradiction Engine}
++
+\text{Verifier}
++
+\text{Evidence Graph}.
+Modern agent research already treats planning, tool use, memory, specialization, coordination, and evaluation as separate architectural capabilities rather than properties automatically guaranteed by a single language model.[link.springer][arxiv]
+
+2. Что делает LLM-агент
+2. What an LLM agent does
+RU: LLM особенно сильны там, где пространство возможных решений огромно, неструктурировано и выражено на естественном языке. Они способны извлекать смысл из текста, строить аналогии, писать код, предлагать гипотезы и быстро генерировать несколько стратегий.
+
+Упрощённый LLM-агент действует так:
+
+\text{Goal}
+\rightarrow
+\text{LLM reasoning}
+\rightarrow
+\text{Plan}
+\rightarrow
+\text{Tool call}
+\rightarrow
+\text{Observation}
+\rightarrow
+\text{Next action}.
+Его политика выбора следующего шага может быть представлена как:
+
+a_t
+=
+\pi_{\mathrm{LLM}}
+\left(
+g,\,
+o_{1:t},\,
+m_t,\,
+\mathcal{T}
+\right),
+где:
+
+g — цель пользователя;
+o_{1:t} — история наблюдений;
+m_t — память и текущий контекст;
+\mathcal{T} — доступные инструменты;
+a_t — следующее действие.
+
+LLM-agent отвечает на вопрос:
+
+«Какой следующий шаг выглядит наиболее полезным для достижения цели?»
+Это чрезвычайно мощная способность. Но сама по себе она не доказывает, что шаг истинный, безопасный, причинно корректный или согласованный с внешними фактами.
+
+EN: LLMs are especially strong when the space of possible solutions is vast, unstructured, and expressed in natural language. They can extract meaning from text, build analogies, write code, propose hypotheses, and rapidly generate multiple strategies.
+
+A simplified LLM agent operates as follows:
+
+\text{Goal}
+\rightarrow
+\text{LLM reasoning}
+\rightarrow
+\text{Plan}
+\rightarrow
+\text{Tool call}
+\rightarrow
+\text{Observation}
+\rightarrow
+\text{Next action}.
+Its next-action policy can be represented as:
+
+a_t
+=
+\pi_{\mathrm{LLM}}
+\left(
+g,\,
+o_{1:t},\,
+m_t,\,
+\mathcal{T}
+\right),
+where:
+
+g is the user goal;
+o_{1:t} is the observation history;
+m_t is memory and current context;
+\mathcal{T} is the set of available tools;
+a_t is the next action.
+
+An LLM agent asks:
+
+“What next step appears most useful for achieving the goal?”
+This is an extremely powerful capability. However, it does not itself prove that the action is true, safe, causally valid, or consistent with external evidence.
+
+3. Что добавляет GRA
+3. What GRA adds
+RU: GRA — Godel-Reductio ad Absurdum — можно рассматривать как архитектурный принцип: противоречие не заметается под ковёр, не усредняется голосованием и не маскируется более уверенным текстом. Оно становится объектом измерения, объяснения и пересмотра.
+
+Вместо вопроса:
+
+«Какой ответ наиболее вероятен или наиболее убедителен?»
+GRA задаёт другой вопрос:
+
+«Какая гипотеза, предпосылка, связь или действие создаёт конфликт с данными, ограничениями или следствиями — и какая ревизия делает систему более согласованной?»
+Пусть система имеет состояние S, набор наблюдений D, набор ограничений \mathcal{C}, гипотезы \mathcal{H} и действия \mathcal{A}. Тогда можно определить вектор противоречий:
+
+\mathbf{c}(S)
+=
+\begin{bmatrix}
+c_{\mathrm{data}} \\
+c_{\mathrm{logic}} \\
+c_{\mathrm{causal}} \\
+c_{\mathrm{constraint}} \\
+c_{\mathrm{coordination}} \\
+c_{\mathrm{uncertainty}} \\
+c_{\mathrm{safety}}
+\end{bmatrix}.
+Общий GRA-функционал:
+
+J_{\mathrm{GRA}}(S)
+=
+\sum_i w_i c_i(S)^2
++
+\lambda \Omega(S),
+где:
+
+c_i(S) — конкретная метрика противоречия;
+w_i — важность типа конфликта;
+\Omega(S) — штраф за сложность, хрупкость или небезопасность модели;
+\lambda — коэффициент регуляризации.
+
+Цель системы — не «сделать красивый текст», а найти ревизию состояния:
+
+S^\star
+=
+\arg\min_{S' \in \mathcal{R}(S)}
+J_{\mathrm{GRA}}(S'),
+где \mathcal{R}(S) — допустимое множество ревизий: изменение гипотезы, удаление ложного допущения, добавление причинного ограничения, запрос новых данных, запуск теста или отказ от действия.
+
+EN: GRA — Godel-Reductio ad Absurdum — can be understood as an architectural principle: contradiction is not hidden, averaged away by voting, or disguised by more confident language. It becomes an object of measurement, explanation, and revision.
+
+Instead of asking:
+
+“Which answer is most likely or most convincing?”
+GRA asks:
+
+“Which hypothesis, assumption, relation, or action conflicts with data, constraints, or consequences — and what revision makes the system more coherent?”
+Let the system have state S, observations D, constraints \mathcal{C}, hypotheses \mathcal{H}, and actions \mathcal{A}. We can define a contradiction vector:
+
+\mathbf{c}(S)
+=
+\begin{bmatrix}
+c_{\mathrm{data}} \\
+c_{\mathrm{logic}} \\
+c_{\mathrm{causal}} \\
+c_{\mathrm{constraint}} \\
+c_{\mathrm{coordination}} \\
+c_{\mathrm{uncertainty}} \\
+c_{\mathrm{safety}}
+\end{bmatrix}.
+The global GRA functional is:
+
+J_{\mathrm{GRA}}(S)
+=
+\sum_i w_i c_i(S)^2
++
+\lambda \Omega(S),
+where:
+
+c_i(S) is a concrete contradiction metric;
+w_i represents the importance of each conflict type;
+\Omega(S) penalizes complexity, fragility, or unsafe solutions;
+\lambda is a regularization coefficient.
+
+The objective is not to “produce beautiful text,” but to find a revision:
+
+S^\star
+=
+\arg\min_{S' \in \mathcal{R}(S)}
+J_{\mathrm{GRA}}(S'),
+where \mathcal{R}(S) is the set of allowed revisions: changing a hypothesis, removing a false assumption, adding a causal constraint, requesting new evidence, running a test, or refusing an action.
+
+4. N-scaling и K-scaling
+4. N-scaling and K-scaling
+RU: В упрощённом виде N-scaling означает рост внутренней мощности модели:
+
+N
+=
+\text{parameters}
++
+\text{training data}
++
+\text{training compute}.
+Рост N обычно улучшает способность модели понимать язык, обобщать, писать код, следовать инструкциям и генерировать более сильные варианты решения.
+
+Но GRA вводит другое измерение: глубину проверяемой ревизии k.
+
+k
+=
+\text{depth of contradiction analysis, revision, and validation}.
+Можно записать практическую модель силы агента так:
+
+\text{Agent Capability}
+=
+F
+\left(
+N,\,
+k,\,
+M,\,
+T,\,
+E,\,
+V
+\right),
+где:
+
+N — способность базовой модели;
+k — глубина циклов GRA-пересмотра;
+M — долговременная структурированная память;
+T — инструменты: поиск, код, симуляторы, базы данных, API;
+E — внешние доказательства и наблюдения;
+V — верификация: тесты, формальные ограничения, независимые проверки.
+
+N-scaling увеличивает способность генерировать варианты.
+
+K-scaling увеличивает способность отвергать неподходящие варианты на основании доказательств.
+
+\text{N-scaling}
+\Rightarrow
+\text{more candidate solutions}.
+\text{K-scaling}
+\Rightarrow
+\text{better elimination of invalid solutions}.
+EN: In simplified form, N-scaling means increasing the internal capability of the model:
+
+N
+=
+\text{parameters}
++
+\text{training data}
++
+\text{training compute}.
+Increasing N commonly improves a model’s capacity to understand language, generalize, write code, follow instructions, and generate stronger candidate solutions.
+
+GRA introduces another dimension: the depth of verifiable revision, k.
+
+k
+=
+\text{depth of contradiction analysis, revision, and validation}.
+A practical model of agent capability can be written as:
+
+\text{Agent Capability}
+=
+F
+\left(
+N,\,
+k,\,
+M,\,
+T,\,
+E,\,
+V
+\right),
+where:
+
+N is base-model capability;
+k is the depth of GRA revision cycles;
+M is persistent structured memory;
+T is the tool set: search, code, simulators, databases, APIs;
+E is external evidence and observations;
+V is verification: tests, formal constraints, and independent checks.
+
+N-scaling increases the ability to generate alternatives.
+
+K-scaling increases the ability to reject unsuitable alternatives on evidential grounds.
+
+\text{N-scaling}
+\Rightarrow
+\text{more candidate solutions}.
+\text{K-scaling}
+\Rightarrow
+\text{better elimination of invalid solutions}.
+5. Почему консенсус не равен истине
+5. Why consensus is not truth
+RU: Многоагентная система легко создаёт иллюзию надёжности: если десять агентов пришли к одному выводу, кажется, что этот вывод подтверждён. Но если агенты используют одинаковую модель, одинаковые источники, одинаковую исходную ошибку или один и тот же неверный промпт, они могут воспроизводить одну и ту же ложь.
+
+\text{Consensus} \not\Rightarrow \text{Truth}.
+Пусть H — гипотеза, а агенты A_1,\dots,A_N не являются независимыми. Тогда простое голосование:
+
+\hat H
+=
+\operatorname{majority}
+\left(
+A_1(H),\dots,A_N(H)
+\right)
+не создаёт независимого доказательства.
+
+Если ошибки агентов коррелированы, то увеличение числа агентов может повысить уверенность в ложном выводе:
+
+\Pr(\text{majority wrong})
+\not\to 0
+\quad
+\text{when errors are strongly correlated}.
+Поэтому GRA-агент не должен только голосовать. Он должен строить граф доказательств и конфликтов:
+
+\mathcal{G}_{\mathrm{evidence}}
+=
+(V_{\mathrm{claims}},E_{\mathrm{supports}},E_{\mathrm{contradicts}}).
+Каждое утверждение связывается с:
+
+источником;
+предпосылками;
+способом вывода;
+подтверждающими данными;
+контраргументами;
+тестируемыми следствиями;
+степенью независимости доказательства.
+
+EN: A multi-agent system can easily create an illusion of reliability: if ten agents reach the same conclusion, the conclusion may appear validated. Yet if the agents use the same model, the same sources, the same initial error, or the same flawed prompt, they can reproduce the same falsehood.
+
+\text{Consensus} \not\Rightarrow \text{Truth}.
+Let H be a hypothesis, and let agents A_1,\dots,A_N not be independent. Then simple voting:
+
+\hat H
+=
+\operatorname{majority}
+\left(
+A_1(H),\dots,A_N(H)
+\right)
+does not create independent evidence.
+
+When agent errors are correlated, increasing the number of agents may increase confidence in a false conclusion:
+
+\Pr(\text{majority wrong})
+\not\to 0
+\quad
+\text{when errors are strongly correlated}.
+A GRA agent should therefore not merely vote. It should construct an evidence-and-conflict graph:
+
+\mathcal{G}_{\mathrm{evidence}}
+=
+(V_{\mathrm{claims}},E_{\mathrm{supports}},E_{\mathrm{contradicts}}).
+Every claim should be connected to:
+
+its source;
+its assumptions;
+its derivation path;
+supporting data;
+counterarguments;
+testable consequences;
+the independence level of the evidence.
+
+6. GRA-цикл: от генерации к проверяемому решению
+6. The GRA loop: from generation to verifiable decision
+RU: Практический цикл объединённого агента может выглядеть так:
+
+\text{Goal}
+\rightarrow
+\text{Generate}
+\rightarrow
+\text{Formalize}
+\rightarrow
+\text{Detect Contradictions}
+\rightarrow
+\text{Revise}
+\rightarrow
+\text{Test}
+\rightarrow
+\text{Store Evidence}
+\rightarrow
+\text{Act}.
+Шаг 1. Генерация гипотез
+LLM создаёт множество кандидатов:
+
+\mathcal{H}_t
+=
+\{
+H_1,H_2,\dots,H_m
+\}.
+Например, для проблемы в коде это могут быть несколько причин бага; для биологии — несколько вариантов регуляторной сети; для бизнеса — несколько стратегий принятия решения.
+
+Шаг 2. Формализация
+Свободный текст превращается в утверждения, ограничения и предсказания:
+
+H_i
+\Rightarrow
+\{
+A_i,\,
+P_i,\,
+C_i
+\},
+где:
+
+A_i — набор предпосылок;
+P_i — проверяемые предсказания;
+C_i — ограничения.
+
+Шаг 3. Измерение противоречия
+Для каждой гипотезы система проверяет её согласованность с данными:
+
+c_{\mathrm{data}}(H_i)
+=
+\sum_{t=1}^{T}
+\left\|
+y_t-\hat y_t(H_i)
+\right\|_{\Sigma^{-1}}^2.
+Если предсказания \hat y_t(H_i) плохо согласуются с наблюдениями y_t, гипотеза получает штраф.
+
+Шаг 4. Reductio ad absurdum
+Система ищет следствие, которое противоречит фактам, логике или ограничениям:
+
+H_i
+\land
+A_i
+\Rightarrow
+P_i.
+Если:
+
+P_i
+\land
+\neg P_i^{\mathrm{observed}},
+то гипотеза H_i или одна из её предпосылок требует пересмотра.
+
+Шаг 5. Структурная ревизия
+LLM и специализированные модули предлагают ревизии:
+
+\mathcal{R}(H_i)
+=
+\{
+\text{remove assumption},
+\text{add latent variable},
+\text{change causal edge},
+\text{collect new data},
+\text{refuse action}
+\}.
+GRA выбирает не наиболее красноречивую ревизию, а ту, которая лучше снижает общий функционал противоречий на независимой проверке.
+
+Шаг 6. Верификация
+\text{Accept}(H_i)
+\iff
+J_{\mathrm{train}} \downarrow
+\land
+J_{\mathrm{test}} \downarrow
+\land
+\text{calibration acceptable}
+\land
+\text{safety constraints satisfied}.
+EN: A practical loop for the combined agent can be written as:
+
+\text{Goal}
+\rightarrow
+\text{Generate}
+\rightarrow
+\text{Formalize}
+\rightarrow
+\text{Detect Contradictions}
+\rightarrow
+\text{Revise}
+\rightarrow
+\text{Test}
+\rightarrow
+\text{Store Evidence}
+\rightarrow
+\text{Act}.
+Step 1. Hypothesis generation
+The LLM creates a set of candidates:
+
+\mathcal{H}_t
+=
+\{
+H_1,H_2,\dots,H_m
+\}.
+For a software issue, these may be several candidate bug causes; for biology, several candidate regulatory networks; for business, several decision strategies.
+
+Step 2. Formalization
+Free text is translated into claims, constraints, and predictions:
+
+H_i
+\Rightarrow
+\{
+A_i,\,
+P_i,\,
+C_i
+\},
+where:
+
+A_i is the set of assumptions;
+P_i is the set of testable predictions;
+C_i is the set of constraints.
+
+Step 3. Contradiction measurement
+For each hypothesis, the system tests consistency with evidence:
+
+c_{\mathrm{data}}(H_i)
+=
+\sum_{t=1}^{T}
+\left\|
+y_t-\hat y_t(H_i)
+\right\|_{\Sigma^{-1}}^2.
+When predictions \hat y_t(H_i) disagree with observations y_t, the hypothesis receives a penalty.
+
+Step 4. Reductio ad absurdum
+The system searches for a consequence that conflicts with facts, logic, or constraints:
+
+H_i
+\land
+A_i
+\Rightarrow
+P_i.
+If:
+
+P_i
+\land
+\neg P_i^{\mathrm{observed}},
+then H_i or one of its assumptions requires revision.
+
+Step 5. Structural revision
+The LLM and specialized modules propose revisions:
+
+\mathcal{R}(H_i)
+=
+\{
+\text{remove assumption},
+\text{add latent variable},
+\text{change causal edge},
+\text{collect new data},
+\text{refuse action}
+\}.
+GRA does not select the most eloquent revision. It selects the revision that best reduces the total contradiction functional under independent validation.
+
+Step 6. Verification
+\text{Accept}(H_i)
+\iff
+J_{\mathrm{train}} \downarrow
+\land
+J_{\mathrm{test}} \downarrow
+\land
+\text{calibration acceptable}
+\land
+\text{safety constraints satisfied}.
+7. Практическое применение: разработка ПО
+7. Practical application: software engineering
+RU: В разработке ПО LLM уже хорошо пишет код, объясняет API, генерирует тесты и предлагает исправления. Но она может создать правдоподобный патч, который нарушает бизнес-логику, безопасность или совместимость.
+
+В GRA-подходе состояние системы включает код, требования, тесты, логи и ограничения:
+
+S_{\mathrm{software}}
+=
+\{
+\text{code},
+\text{requirements},
+\text{tests},
+\text{logs},
+\text{security policies}
+\}.
+Функционал противоречий:
+
+J_{\mathrm{software}}
+=
+w_1 J_{\mathrm{test}}
++
+w_2 J_{\mathrm{spec}}
++
+w_3 J_{\mathrm{security}}
++
+w_4 J_{\mathrm{performance}}
++
+w_5 J_{\mathrm{regression}}.
+Где:
+
+J_{\mathrm{test}} — число и важность проваленных тестов;
+J_{\mathrm{spec}} — расхождение с требованиями;
+J_{\mathrm{security}} — нарушения политик безопасности;
+J_{\mathrm{performance}} — превышение допустимых ресурсов;
+J_{\mathrm{regression}} — новые ошибки в ранее работавших сценариях.
+
+Тогда цикл выглядит так:
+
+\text{LLM writes patch}
+\rightarrow
+\text{CI runs tests}
+\rightarrow
+\text{GRA localizes violated constraint}
+\rightarrow
+\text{LLM proposes revisions}
+\rightarrow
+\text{CI validates or rejects}.
+Именно здесь GRA не заменяет LLM, а делает её работу проверяемой и инженерно надёжной.
+
+EN: In software engineering, LLMs already write code, explain APIs, generate tests, and propose fixes. But they can produce plausible patches that violate business logic, security requirements, or compatibility.
+
+In a GRA approach, the system state includes code, requirements, tests, logs, and constraints:
+
+S_{\mathrm{software}}
+=
+\{
+\text{code},
+\text{requirements},
+\text{tests},
+\text{logs},
+\text{security policies}
+\}.
+The contradiction functional becomes:
+
+J_{\mathrm{software}}
+=
+w_1 J_{\mathrm{test}}
++
+w_2 J_{\mathrm{spec}}
++
+w_3 J_{\mathrm{security}}
++
+w_4 J_{\mathrm{performance}}
++
+w_5 J_{\mathrm{regression}}.
+Where:
+
+J_{\mathrm{test}} is the number and importance of failed tests;
+J_{\mathrm{spec}} measures deviation from requirements;
+J_{\mathrm{security}} measures policy violations;
+J_{\mathrm{performance}} measures resource-limit violations;
+J_{\mathrm{regression}} measures new failures in previously working cases.
+
+The resulting loop is:
+
+\text{LLM writes patch}
+\rightarrow
+\text{CI runs tests}
+\rightarrow
+\text{GRA localizes violated constraint}
+\rightarrow
+\text{LLM proposes revisions}
+\rightarrow
+\text{CI validates or rejects}.
+Here, GRA does not replace the LLM; it makes LLM work verifiable and engineering-grade.
+
+8. Практическое применение: вычислительная биология
+8. Practical application: computational biology
+RU: Особенно интересная область для GRA-enhanced agents — вычислительная биология. Биологические данные часто неполны, шумны и многослойны: RNA, белки, метаболиты, эпигенетика, фенотип клетки, реакция на лекарство, временная динамика.
+
+Пусть скрытое состояние клетки равно:
+
+x(t)
+=
+\begin{bmatrix}
+x_{\mathrm{RNA}}(t) \\
+x_{\mathrm{protein}}(t) \\
+x_{\mathrm{metabolites}}(t) \\
+x_{\mathrm{epigenetics}}(t) \\
+x_{\mathrm{phenotype}}(t)
+\end{bmatrix}.
+Динамическая модель:
+
+\frac{dx}{dt}
+=
+f_\theta
+\left(
+x(t),u(t),G
+\right)
++
+\varepsilon(t),
+где:
+
+G — граф генетических, белковых и метаболических взаимодействий;
+\theta — параметры модели;
+u(t) — вмешательство: лекарство, CRISPR, стресс, изменение среды;
+\varepsilon(t) — шум и неизвестные факторы.
+
+Наблюдения:
+
+y(t)
+=
+Hx(t)
++
+\nu(t).
+GRA-функционал для клеточного цифрового двойника:
+
+J_{\mathrm{bio}}
+=
+w_d J_{\mathrm{data}}
++
+w_c J_{\mathrm{causal}}
++
+w_h J_{\mathrm{hierarchy}}
++
+w_u J_{\mathrm{uncertainty}}
++
+w_s J_{\mathrm{safety}}
++
+\lambda\|\theta\|_1.
+Где:
+
+J_{\mathrm{data}}
+=
+\sum_t
+\|y_t-\hat y_t\|_{\Sigma^{-1}}^2
+измеряет расхождение модели с экспериментальными данными;
+
+J_{\mathrm{causal}}
+=
+\sum_{e \in E}
+\ell
+\left(
+\Delta y_e^{\mathrm{pred}},
+\Delta y_e^{\mathrm{observed}}
+\right)
+измеряет, насколько модель правильно предсказывает эффект реального вмешательства;
+
+J_{\mathrm{hierarchy}}
+=
+\sum_{i,j}
+\lambda_{ij}
+\left\|
+S_i-\mathcal{L}_{j\to i}(S_j)
+\right\|^2
+измеряет конфликт между уровнями — например, между RNA-уровнем, белковым уровнем и наблюдаемым фенотипом.
+
+LLM в такой системе читает литературу, извлекает возможные механизмы, строит кандидатные гипотезы и помогает проектировать эксперимент. GRA проверяет, согласуются ли эти механизмы с данными и причинными вмешательствами.
+
+Такой подход не является доказательством «обнуления старения» или автоматического открытия лекарств. Он является воспроизводимой схемой для выбора более сильных гипотез, более информативных экспериментов и более надёжных цифровых биологических моделей. В вычислительной биологии особенно важны идентифицируемость параметров, чувствительность модели и проверка на независимых экспериментальных данных; хорошее совпадение на обучающем наборе не гарантирует, что причинные параметры реально восстановлены.[nature][arxiv]
+
+EN: Computational biology is an especially promising domain for GRA-enhanced agents. Biological data are often incomplete, noisy, and multi-layered: RNA, proteins, metabolites, epigenetics, cell phenotypes, drug response, and temporal dynamics.
+
+Let the latent cell state be:
+
+x(t)
+=
+\begin{bmatrix}
+x_{\mathrm{RNA}}(t) \\
+x_{\mathrm{protein}}(t) \\
+x_{\mathrm{metabolites}}(t) \\
+x_{\mathrm{epigenetics}}(t) \\
+x_{\mathrm{phenotype}}(t)
+\end{bmatrix}.
+The dynamic model is:
+
+\frac{dx}{dt}
+=
+f_\theta
+\left(
+x(t),u(t),G
+\right)
++
+\varepsilon(t),
+where:
+
+G is a graph of genetic, protein, and metabolic interactions;
+\theta contains model parameters;
+u(t) is an intervention: drug, CRISPR perturbation, stress, or environmental change;
+\varepsilon(t) captures noise and unknown factors.
+
+Observations are:
+
+y(t)
+=
+Hx(t)
++
+\nu(t).
+A GRA functional for a cellular digital twin can be written as:
+
+J_{\mathrm{bio}}
+=
+w_d J_{\mathrm{data}}
++
+w_c J_{\mathrm{causal}}
++
+w_h J_{\mathrm{hierarchy}}
++
+w_u J_{\mathrm{uncertainty}}
++
+w_s J_{\mathrm{safety}}
++
+\lambda\|\theta\|_1.
+Where:
+
+J_{\mathrm{data}}
+=
+\sum_t
+\|y_t-\hat y_t\|_{\Sigma^{-1}}^2
+measures the mismatch between model predictions and experimental data;
+
+J_{\mathrm{causal}}
+=
+\sum_{e \in E}
+\ell
+\left(
+\Delta y_e^{\mathrm{pred}},
+\Delta y_e^{\mathrm{observed}}
+\right)
+measures how well the model predicts the effect of real interventions;
+
+J_{\mathrm{hierarchy}}
+=
+\sum_{i,j}
+\lambda_{ij}
+\left\|
+S_i-\mathcal{L}_{j\to i}(S_j)
+\right\|^2
+measures conflict across levels — for example, between RNA, protein, and observed phenotype.
+
+The LLM in this system reads literature, extracts candidate mechanisms, constructs hypotheses, and helps design experiments. GRA checks whether those mechanisms agree with data and causal interventions.
+
+This approach is not proof of “zeroing aging” or automatically discovering therapies. It is a reproducible framework for selecting stronger hypotheses, more informative experiments, and more reliable biological digital twins. In computational biology, parameter identifiability, model sensitivity, and validation on independent experimental data are critical: a good fit on training data does not guarantee that causal parameters have actually been recovered.[nature][arxiv]
+
+9. Практическое применение: наука и исследования
+9. Practical application: science and research
+RU: В научном исследовании LLM-agent может быть замечательным помощником, но он не должен быть единственным источником выводов. Его роль:
+
+читать литературу;
+сравнивать теории;
+извлекать утверждения и цитаты;
+предлагать математические модели;
+писать симуляции;
+проектировать возможные эксперименты;
+объяснять результаты человеку.
+
+Роль GRA:
+
+фиксировать, какие утверждения опираются на какие данные;
+искать взаимно несовместимые выводы;
+отделять наблюдение от интерпретации;
+строить список альтернативных гипотез;
+предлагать опыт, различающий конкурирующие модели;
+сохранять историю того, почему гипотеза была принята или отвергнута.
+
+Следующий эксперимент можно выбирать как задачу максимального ожидаемого уменьшения противоречия на единицу стоимости:
+
+e^\star
+=
+\arg\max_{e\in\mathcal{E}}
+\frac{
+\mathbb{E}
+\left[
+J_{\mathrm{before}}
+-
+J_{\mathrm{after}}(e)
+\right]
+}
+{\mathrm{Cost}(e)}.
+Это превращает агентную систему в активного помощника исследователя: она не только отвечает на вопросы, но и помогает выбрать наиболее информативное следующее действие.
+
+EN: In scientific research, an LLM agent can be an exceptional assistant, but it should not be the sole source of conclusions. Its role includes:
+
+reading literature;
+comparing theories;
+extracting claims and citations;
+proposing mathematical models;
+writing simulations;
+designing candidate experiments;
+explaining results to humans.
+
+The role of GRA is to:
+
+record which claims rely on which evidence;
+search for mutually incompatible conclusions;
+separate observation from interpretation;
+maintain alternative hypotheses;
+propose experiments that distinguish competing models;
+preserve the history of why a hypothesis was accepted or rejected.
+
+The next experiment can be selected as the action with maximum expected contradiction reduction per unit cost:
+
+e^\star
+=
+\arg\max_{e\in\mathcal{E}}
+\frac{
+\mathbb{E}
+\left[
+J_{\mathrm{before}}
+-
+J_{\mathrm{after}}(e)
+\right]
+}
+{\mathrm{Cost}(e)}.
+This turns an agentic system into an active research assistant: it does not merely answer questions; it helps choose the most informative next action.
+
+The Design–Build–Test–Learn cycle in synthetic biology provides a practical analogue: computational hypotheses inform a design, the system is built or perturbed, its behavior is tested, and results update the next round of learning.[link.springer][arxiv][commons-os.github]
+
+10. Как проверять GRA честно
+10. How to validate GRA honestly
+RU: Главная опасность любой новой архитектуры — объявить симуляцию доказательством универсальной теории. Если GRA-система тестируется только в среде, правила которой были созданы самой GRA-системой, это показывает внутреннюю согласованность эксперимента, но не независимое превосходство.
+
+Поэтому необходима многоуровневая верификация.
+
+УровеньПроверкаВопрос0Синтетические данные с известной истинойМожет ли система восстановить скрытую структуру?1Отложенная выборкаУлучшает ли GRA качество вне обучения?2Независимый внешний наборСохраняется ли результат при смене данных, источника или домена?3Предсказание вмешательстваПравильно ли система предсказала новый эффект до эксперимента?4Проспективный циклПомогает ли система находить подтверждённые решения быстрее baseline?5Независимая репликацияПовторяется ли эффект другой командой и в другой среде?
+
+Ключевой показатель не «насколько красиво агенты согласились», а:
+
+\Delta_{\mathrm{OOD}}
+=
+\mathrm{Score}_{\mathrm{GRA,test}}
+-
+\mathrm{Score}_{\mathrm{baseline,test}}.
+Также важны:
+
+\mathrm{CostPerValidatedOutcome}
+=
+\frac{\mathrm{Total\ Compute+Experiment\ Cost}}
+{\mathrm{Number\ of\ independently\ validated\ outcomes}}.
+И калибровка уверенности:
+
+\Pr
+\left(
+\text{prediction correct}
+\mid
+\hat p
+\right)
+\approx
+\hat p.
+Если система обещает 80% вероятность успеха, она должна быть права приблизительно в 80% сопоставимых случаев.
+
+EN: The main danger of any new architecture is declaring a simulation to be proof of a universal theory. If a GRA system is tested only in an environment whose rules were designed by the same GRA system, this demonstrates internal consistency, not independent superiority.
+
+A multi-level validation program is therefore necessary.
+
+LevelTestQuestion0Synthetic data with known ground truthCan the system recover hidden structure?1Held-out dataDoes GRA improve performance beyond training data?2Independent external datasetDoes the result persist across datasets, sources, or domains?3Intervention predictionDid the system correctly predict a new effect before the experiment?4Prospective loopDoes the system find validated solutions faster than baselines?5Independent replicationDoes the effect repeat with another team and environment?
+
+The key metric is not “how elegantly agents agreed,” but:
+
+\Delta_{\mathrm{OOD}}
+=
+\mathrm{Score}_{\mathrm{GRA,test}}
+-
+\mathrm{Score}_{\mathrm{baseline,test}}.
+Also important are:
+
+\mathrm{CostPerValidatedOutcome}
+=
+\frac{\mathrm{Total\ Compute+Experiment\ Cost}}
+{\mathrm{Number\ of\ independently\ validated\ outcomes}}.
+And confidence calibration:
+
+\Pr
+\left(
+\text{prediction correct}
+\mid
+\hat p
+\right)
+\approx
+\hat p.
+If a system claims an 80% probability of success, it should be correct in roughly 80% of comparable cases.
+
+11. Ограничения и честные выводы
+11. Limitations and honest conclusions
+RU: GRA не устраняет фундаментальные ограничения автоматически.
+
+Она не может:
+
+создать истину без данных;
+доказать причинность только из корреляций;
+заменить лабораторный эксперимент в биологии;
+гарантировать безопасность, если правила безопасности неполны;
+решить неразрешимые вычислительные задачи одной только архитектурой;
+превратить согласованность модели в доказательство того, что модель описывает реальность.
+
+Состояние J \approx 0 должно означать только следующее:
+
+В пределах выбранных метрик, данных, ограничений и допущений система не обнаружила существенных противоречий.
+Это не равнозначно утверждению:
+
+«Система нашла абсолютную истину».
+Поэтому зрелая GRA-архитектура обязана иметь режимы:
+
+\{\text{accept},\text{revise},\text{request evidence},\text{abstain},\text{refuse action}\}.
+Способность честно сказать «данных недостаточно» — не слабость агента, а признак его зрелости.
+
+EN: GRA does not automatically eliminate fundamental limitations.
+
+It cannot:
+
+create truth without data;
+prove causality from correlation alone;
+replace laboratory experiments in biology;
+guarantee safety when safety rules are incomplete;
+solve undecidable computational problems through architecture alone;
+turn internal model coherence into proof that the model describes reality.
+
+A state of J \approx 0 should mean only:
+
+Within the chosen metrics, data, constraints, and assumptions, the system has not detected substantial contradictions.
+It is not equivalent to claiming:
+
+“The system has found absolute truth.”
+A mature GRA architecture must therefore support the following modes:
+
+\{\text{accept},\text{revise},\text{request evidence},\text{abstain},\text{refuse action}\}.
+The ability to honestly say “the evidence is insufficient” is not a weakness of the agent; it is a sign of maturity.
+
+12. Итог: агент будущего
+12. Conclusion: the agent of the future
+RU: LLM и GRA не обязаны быть врагами. Они нужны друг другу.
+
+LLM без GRA может стать невероятно творческим, быстрым и убедительным генератором, но сохранять риск галлюцинаций, слабой причинности, забытых ограничений и ложной уверенности.
+
+GRA без LLM может быть строгим механизмом проверки, но ему будет трудно понимать естественный язык, создавать богатые гипотезы, изобретать стратегии и работать в открытом мире.
+
+Поэтому наиболее перспективный агент — это гибрид:
+
+\text{Future Agent}
+=
+\underbrace{\text{LLM}}_{\text{language, imagination, hypothesis generation}}
++
+\underbrace{\text{GRA}}_{\text{contradiction analysis, revision, verification}}
++
+\underbrace{\text{Tools}}_{\text{action}}
++
+\underbrace{\text{Memory}}_{\text{continuity}}
++
+\underbrace{\text{Evidence}}_{\text{contact with reality}}.
+N-scaling увеличивает внутренний потенциал модели. K-scaling увеличивает глубину критики, проверки, пересмотра и накопления доказательств.
+
+Главный вопрос будущего ИИ — не только:
+
+«Насколько большой стала модель?»
+Но и:
+
+«Какие предпосылки агент умеет проверять? Какие противоречия он способен обнаружить? Как он доказывает, что его действие лучше альтернатив? И умеет ли он остановиться, когда доказательств недостаточно?»
+EN: LLM and GRA do not have to be enemies. They need each other.
+
+An LLM without GRA can become an extraordinarily creative, fast, and persuasive generator while still retaining the risks of hallucinations, weak causality, forgotten constraints, and false confidence.
+
+GRA without an LLM can become a rigorous verification mechanism, but it may struggle to understand natural language, generate rich hypotheses, invent strategies, and operate in an open world.
+
+The most promising agent is therefore a hybrid:
+
+\text{Future Agent}
+=
+\underbrace{\text{LLM}}_{\text{language, imagination, hypothesis generation}}
++
+\underbrace{\text{GRA}}_{\text{contradiction analysis, revision, verification}}
++
+\underbrace{\text{Tools}}_{\text{action}}
++
+\underbrace{\text{Memory}}_{\text{continuity}}
++
+\underbrace{\text{Evidence}}_{\text{contact with reality}}.
+N-scaling increases the internal potential of a model. K-scaling increases the depth of criticism, verification, revision, and evidence accumulation.
+
+The central question for the future of AI is not only:
+
+“How large has the model become?”
+But also:
+
+“Which assumptions can the agent test? Which contradictions can it detect? How does it demonstrate that an action is better than alternatives? And can it stop when evidence is insufficient?”
