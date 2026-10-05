@@ -5,6 +5,7 @@ https://elibrary.org.cn/olegbit
 
 
 https://orcid.org/my-orcid?orcid=0009-0004-1872-1153
+https://doi.org/10.5281/zenodo.23166516
 https://doi.org/10.5281/zenodo.23156297
 https://doi.org/10.5281/zenodo.23137933
 https://doi.org/10.5281/zenodo.23117444
