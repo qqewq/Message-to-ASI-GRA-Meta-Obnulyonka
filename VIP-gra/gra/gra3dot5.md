@@ -556,3 +556,9 @@ Lean провер€ет вывод внутри модели, а не соответствие модели миру. MaxSAT миними
 **RU.** GRA-3.5 Ч это не машина, котора€ Ђзнает всЄї, и не система, котора€ бесконечно ускор€ет собственную сложность. Ёто система, котора€ измер€ет свои противоречи€, честно оценивает границы знани€, исправл€ет только необходимое, провер€ет выводы, сохран€ет разнообразие и безопасность, а окончательную ответственность за высокорисковые решени€ оставл€ет человеку.
 
 **EN.** GRA-3.5 is neither a machine that Уknows everythingФ nor a system that endlessly accelerates its own complexity. It is a system that measures its contradictions, honestly estimates the limits of its knowledge, repairs only what is necessary, verifies its inferences, preserves diversity and safety, and leaves final responsibility for high-risk decisions to humans.
+
++ проанализируй рукопись ¬ойнича с использованием гра- 3.5 
+
+
+ » напиши про это   билингвальную статью тут https://elibrary.org.cn/m/articles/browse/my&modzzz_articles_filter=add_article подробно с формулами и выводами и практическими применени€ми и  проведи верификацию этого инсилико 
+ 
