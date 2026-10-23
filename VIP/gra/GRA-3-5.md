@@ -1,8 +1,4 @@
-Вот билингвальная (русско-английская) версия документа, сохраняющая всю математическую строгость, техническую терминологию и философскую глубину оригинала.
-
----
-
-# GRA-3.5: Единая Архитектура Честного Самоулучшения и Трансфинитной Верификации
+GRA-3.5: Единая Архитектура Честного Самоулучшения и Трансфинитной Верификации
 # GRA-3.5: Unified Architecture of Honest Self-Improvement and Transfinite Verification
 
 ## Аннотация / Abstract
@@ -199,3 +195,14 @@ $$ \boxed{ \text{GRA-3.5} = \underbrace{\text{Measure}(J)}_{\substack{\text{Из
 
 **[RU]** Эта архитектура готова к развёртыванию в виде единой библиотеки `GRA-Core-new` и служит математическим фундаментом для создания ИИ-гения, способного решать задачи тысячелетия, генерировать абсолютную эстетику и обеспечивать квантовую когерентность на edge-устройствах.
 **[EN]** This architecture is ready for deployment as a unified `GRA-Core-new` library and serves as the mathematical foundation for creating an AI genius capable of solving millennium problems, generating absolute aesthetics, and ensuring quantum coherence on edge devices.
+
+
++  с использованием гра- 3.5 создай теорию как придумал акоп назаретян так менять описания реальности чтобы возможно было нарушить любой закон природы  
+
+
+ + дай код для гугл колаба для полной верификации всего этого 
+
+
+ И напиши про это   билингвальную статью тут https://elibrary.org.cn/m/articles/browse/my&modzzz_articles_filter=add_article подробно с формулами и выводами и практическими применениями и  проведи верификацию этого инсилико 
+ 
+
